@@ -17,6 +17,7 @@ struct ContentView: View {
                 case .running, .starting:
                     ZStack {
                         CameraPreview(session: scanner.session)
+                        scanFrame
                         boxOverlay
                     }
                     .ignoresSafeArea()
@@ -82,7 +83,7 @@ struct ContentView: View {
         HStack(spacing: 8) {
             switch scanner.phase {
             case .searching:
-                Label("Leg ein Teil vor die Kamera", systemImage: "viewfinder")
+                Label("Leg ein Teil in den Rahmen", systemImage: "viewfinder")
             case .holdStill:
                 Label("Stillhalten …", systemImage: "hand.raised")
             case .recognizing:
@@ -110,6 +111,24 @@ struct ContentView: View {
         .glassEffect()
         .padding(.top, 8)
         .animation(.default, value: scanner.phase)
+    }
+
+    /// Sichtbares Scanfeld: außen abgedunkelt, innen ein heller Rahmen.
+    private var scanFrame: some View {
+        GeometryReader { geo in
+            let rect = previewRect(scanner.scanArea, image: scanner.imageSize, view: geo.size)
+            let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
+            Path { path in
+                path.addRect(CGRect(origin: .zero, size: geo.size))
+                path.addPath(shape.path(in: rect))
+            }
+            .fill(.black.opacity(0.35), style: FillStyle(eoFill: true))
+            shape
+                .stroke(.white.opacity(0.9), lineWidth: 2)
+                .frame(width: rect.width, height: rect.height)
+                .position(x: rect.midX, y: rect.midY)
+        }
+        .allowsHitTesting(false)
     }
 
     private var boxOverlay: some View {

@@ -27,6 +27,16 @@ final class Scanner: NSObject {
     @ObservationIgnored private var lastAdded: (part: String, color: Int?)?
     @ObservationIgnored private var pending: ScanResult?
 
+    /// Scanfeld: Quadrat, 60 % der Bildbreite, etwas über der Mitte. Nur hier wird nach Bewegung
+    /// gesucht, erkannt und die Farbe gemessen, damit Tasse, Hand & Co. daneben nicht stören.
+    // Kalibrierung: Größe/Lage hier ändern, Anzeige passt sich automatisch an.
+    nonisolated static func scanArea(imageSize: CGSize) -> CGRect {
+        let height = 0.6 * imageSize.width / imageSize.height
+        return CGRect(x: 0.2, y: 0.45 - height / 2, width: 0.6, height: height)
+    }
+
+    var scanArea: CGRect { Self.scanArea(imageSize: imageSize) }
+
     /// Rahmen, der gerade auf dem Bildschirm zu sehen sein soll.
     var displayBox: CGRect? {
         switch phase {
@@ -112,7 +122,8 @@ final class Scanner: NSObject {
         do {
             if let scan = try await Brickognize.identify(image) {
                 let text = [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ")
-                resultBox = thumb == nil ? nil : scan.box // Rahmen nur, wenn er zum Kamerabild gehört
+                // Rahmen nur fürs Kamerabild; Brickognize kennt nur den Ausschnitt → auf Gesamtbild umrechnen
+                resultBox = thumb == nil ? nil : scan.box?.mapped(into: scanArea)
                 if thumb != nil, lastAdded?.part == scan.item.id, lastAdded?.color == scan.color?.id {
                     pending = scan
                     phase = .duplicate(text)
@@ -136,14 +147,12 @@ final class Scanner: NSObject {
 extension Scanner: AVCaptureVideoDataOutputSampleBufferDelegate {
     nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard analyzer.nextFrame(), let pixels = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        let thumb = FrameAnalyzer.thumbnail(pixels)
-        let decision = analyzer.evaluate(thumb)
-        let box = decision == .idle ? nil : FrameAnalyzer.salientBox(pixels)
-        var still: UIImage?
-        if decision == .scan {
-            still = FrameAnalyzer.image(from: pixels)
-        }
         let size = CGSize(width: CVPixelBufferGetWidth(pixels), height: CVPixelBufferGetHeight(pixels))
+        let area = Scanner.scanArea(imageSize: size)
+        let thumb = FrameAnalyzer.thumbnail(pixels, area: area)
+        let decision = analyzer.evaluate(thumb)
+        let box = decision == .idle ? nil : FrameAnalyzer.salientBox(pixels, area: area)
+        let still = decision == .scan ? FrameAnalyzer.image(from: pixels, area: area) : nil
         Task { @MainActor in self.handle(decision, box: box, still: still, thumb: thumb, size: size) }
     }
 }
@@ -207,15 +216,19 @@ final class FrameAnalyzer {
         return Double(zip(a, b).filter { abs(Int($0) - Int($1)) > cellDelta }.count) / Double(a.count)
     }
 
-    /// Helligkeit (Y-Ebene), auf 32×32 verkleinert, jede Zelle = Mittel ihres Bildbereichs.
-    static func thumbnail(_ pixels: CVPixelBuffer, grid: Int = 32) -> [UInt8] {
+    /// Helligkeit (Y-Ebene) im Scanfeld, auf 32×32 verkleinert, jede Zelle = Mittel ihres Bildbereichs.
+    static func thumbnail(_ pixels: CVPixelBuffer, area: CGRect, grid: Int = 32) -> [UInt8] {
         CVPixelBufferLockBaseAddress(pixels, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(pixels, .readOnly) }
         guard let base = CVPixelBufferGetBaseAddressOfPlane(pixels, 0) else { return [] }
-        var source = vImage_Buffer(data: base,
-                                   height: vImagePixelCount(CVPixelBufferGetHeightOfPlane(pixels, 0)),
-                                   width: vImagePixelCount(CVPixelBufferGetWidthOfPlane(pixels, 0)),
-                                   rowBytes: CVPixelBufferGetBytesPerRowOfPlane(pixels, 0))
+        let width = CGFloat(CVPixelBufferGetWidthOfPlane(pixels, 0)), height = CGFloat(CVPixelBufferGetHeightOfPlane(pixels, 0))
+        let rowBytes = CVPixelBufferGetBytesPerRowOfPlane(pixels, 0)
+        let crop = CGRect(x: area.minX * width, y: area.minY * height,
+                          width: area.width * width, height: area.height * height).integral
+        var source = vImage_Buffer(data: base + Int(crop.minY) * rowBytes + Int(crop.minX),
+                                   height: vImagePixelCount(crop.height),
+                                   width: vImagePixelCount(crop.width),
+                                   rowBytes: rowBytes)
         var cells = [UInt8](repeating: 0, count: grid * grid)
         let error = cells.withUnsafeMutableBytes { bytes in
             var target = vImage_Buffer(data: bytes.baseAddress, height: vImagePixelCount(grid),
@@ -225,19 +238,32 @@ final class FrameAnalyzer {
         return error == kvImageNoError ? cells : []
     }
 
-    /// Rahmen um das auffälligste Objekt (normiert, Ursprung oben links), nur für die Anzeige.
-    static func salientBox(_ pixels: CVPixelBuffer) -> CGRect? {
+    /// Rahmen um das auffälligste Objekt im Scanfeld (normiert aufs Gesamtbild, Ursprung oben links), nur für die Anzeige.
+    static func salientBox(_ pixels: CVPixelBuffer, area: CGRect) -> CGRect? {
         let request = VNGenerateObjectnessBasedSaliencyImageRequest()
+        request.regionOfInterest = CGRect(x: area.minX, y: 1 - area.maxY, width: area.width, height: area.height) // Vision: Ursprung unten links
         try? VNImageRequestHandler(cvPixelBuffer: pixels).perform([request])
         guard let b = request.results?.first?.salientObjects?.max(by: { $0.confidence < $1.confidence })?.boundingBox
         else { return nil }
-        return CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height)
+        return CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height).mapped(into: area)
     }
 
     private static let ciContext = CIContext()
 
-    static func image(from pixels: CVPixelBuffer) -> UIImage? {
+    /// Kamerabild, auf das Scanfeld zugeschnitten.
+    static func image(from pixels: CVPixelBuffer, area: CGRect) -> UIImage? {
         let image = CIImage(cvPixelBuffer: pixels)
-        return ciContext.createCGImage(image, from: image.extent).map { UIImage(cgImage: $0) }
+        guard let full = ciContext.createCGImage(image, from: image.extent) else { return nil }
+        let crop = CGRect(x: area.minX * CGFloat(full.width), y: area.minY * CGFloat(full.height),
+                          width: area.width * CGFloat(full.width), height: area.height * CGFloat(full.height)).integral
+        return full.cropping(to: crop).map { UIImage(cgImage: $0) }
+    }
+}
+
+extension CGRect {
+    /// Rahmen, der relativ (0…1) zu `outer` angegeben ist, aufs Gesamtbild umrechnen.
+    func mapped(into outer: CGRect) -> CGRect {
+        CGRect(x: outer.minX + minX * outer.width, y: outer.minY + minY * outer.height,
+               width: width * outer.width, height: height * outer.height)
     }
 }
