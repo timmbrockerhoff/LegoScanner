@@ -32,4 +32,19 @@ let box = CGRect(x: 0.12, y: 0.17, width: 0.76, height: 0.66) // Brickognize-Rah
 let measured = partColor(in: scene(part: yellow, table: wood), box: box)!
 assert(simd_length(measured - yellow) < 20, "gemessen \(measured), erwartet Gelb")
 assert(plate.best(for: measured)?.name == "Yellow")
+// Farbgedächtnis: Nutzer korrigiert "Tan" (warmes Licht) zu "White" → nächster ähnlicher Scan wird White.
+import Foundation
+MainActor.assumeIsolated {
+    ColorMemory.fileURL = FileManager.default.temporaryDirectory.appending(path: "color-memory-test-\(UUID()).json")
+    let partColors = [LegoColor(id: 19, name: "Tan", rgb: SIMD3(228, 205, 158), isTrans: false, bricklinkID: 2, sets: 300),
+                      LegoColor(id: 15, name: "White", rgb: SIMD3(255, 255, 255), isTrans: false, bricklinkID: 1, sets: 500)]
+    let warmWhite = SIMD3<Double>(222, 215, 176)
+    assert(partColors.best(for: warmWhite)?.name == "Tan")                     // ohne Lernen: falsch
+    assert(ColorMemory.choose(warmWhite, among: partColors) == nil)             // noch nichts gelernt
+    ColorMemory.learn(measured: warmWhite, colorID: 15)
+    assert(ColorMemory.choose(SIMD3(225, 212, 172), among: partColors)?.name == "White") // ähnliches Licht → gelernt
+    assert(ColorMemory.choose(SIMD3(160, 165, 169), among: partColors) == nil)  // ganz andere Farbe → nicht anfassen
+    assert(ColorMemory.choose(warmWhite, among: [partColors[0]]) == nil)        // Teil gibt es nicht in White → nicht wählen
+    try? FileManager.default.removeItem(at: ColorMemory.fileURL)
+}
 print("ok")

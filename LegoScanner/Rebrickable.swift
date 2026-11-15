@@ -11,10 +11,48 @@ struct LegoColor: Identifiable, Hashable {
 
     var swatch: Color { Color(red: rgb.x / 255, green: rgb.y / 255, blue: rgb.z / 255) }
 
-    /// "Redmean"-Abstand: einfache, wahrnehmungsnahe RGB-Distanz.
-    func distance(to c: SIMD3<Double>) -> Double {
-        let r = (rgb.x + c.x) / 2, d = rgb - c
-        return (2 + r / 256) * d.x * d.x + 4 * d.y * d.y + (2 + (255 - r) / 256) * d.z * d.z
+    func distance(to c: SIMD3<Double>) -> Double { colorDistance(rgb, c) }
+}
+
+/// "Redmean"-Abstand: einfache, wahrnehmungsnahe RGB-Distanz (quadratisch).
+func colorDistance(_ a: SIMD3<Double>, _ b: SIMD3<Double>) -> Double {
+    let r = (a.x + b.x) / 2, d = a - b
+    return (2 + r / 256) * d.x * d.x + 4 * d.y * d.y + (2 + (255 - r) / 256) * d.z * d.z
+}
+
+/// Lernt aus Farbkorrekturen im Warenkorb: "so gemessen → eigentlich diese Farbe".
+/// Bleibt nur auf dem Gerät. Damit gewöhnt sich die App an Licht, Kamera und Tisch des Nutzers.
+@MainActor
+enum ColorMemory {
+    struct Example: Codable {
+        let measured: SIMD3<Double>
+        let colorID: Int
+    }
+
+    // Kalibrierung: bis zu diesem Abstand gilt eine neue Messung als "gleiche Farbe unter gleichem Licht".
+    // 1500 ≈ ein Unterschied von ~20 pro Farbkanal.
+    static let matchDistance = 1500.0
+    static let maxExamples = 500
+
+    static var fileURL = URL.applicationSupportDirectory.appending(path: "color-memory.json")
+    private static var examples: [Example] = (try? JSONDecoder().decode([Example].self, from: Data(contentsOf: fileURL))) ?? []
+
+    static func learn(measured: SIMD3<Double>, colorID: Int) {
+        examples.append(Example(measured: measured, colorID: colorID))
+        examples = examples.suffix(maxExamples)
+        try? FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try? JSONEncoder().encode(examples).write(to: fileURL, options: .atomic)
+    }
+
+    /// Gelernte Farbe für diese Messung, falls eine Korrektur nah genug dran ist und es das Teil in der Farbe gibt.
+    static func choose(_ measured: SIMD3<Double>?, among colors: [LegoColor]) -> LegoColor? {
+        guard let measured else { return nil }
+        let byID = Dictionary(colors.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        let nearest = examples
+            .filter { byID[$0.colorID] != nil }
+            .min { colorDistance($0.measured, measured) < colorDistance($1.measured, measured) }
+        guard let nearest, colorDistance(nearest.measured, measured) <= matchDistance else { return nil }
+        return byID[nearest.colorID]
     }
 }
 

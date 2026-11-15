@@ -4,19 +4,27 @@ import Observation
 import UIKit
 import Vision
 
-/// Live-Scanner: Die Kamera läuft dauerhaft. Liegt ein neues Teil ruhig im Bild, wird ein Bild an
-/// Brickognize geschickt und das Ergebnis in den Warenkorb gelegt. Dann wartet er auf das nächste Teil.
+/// Ein Teil im Bild, das erkannt wurde und verfolgt wird.
+struct SeenPart: Identifiable {
+    enum State { case counted, unsure }
+    let id = UUID()
+    var box: CGRect // normiert aufs Kamerabild, Ursprung oben links
+    let scan: ScanResult
+    var state: State
+    var label: String { [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ") }
+}
+
+/// Live-Scanner: Die Kamera läuft dauerhaft. Liegt das Bild ruhig, zerlegt der `PartFinder` es in einzelne
+/// Teile; nur Teile, die noch nicht verfolgt werden, gehen an Brickognize (alle gleichzeitig). Erkannte Teile
+/// werden per Vision-Tracking festgehalten, damit Wackeln nichts neu auslöst oder doppelt zählt.
 @MainActor @Observable
 final class Scanner: NSObject {
     enum Camera { case starting, running, denied, unavailable }
-    enum Phase: Equatable { case searching, holdStill, recognizing, found(String), confirm(String, Reason), notFound, failed }
-    /// Warum ein Treffer erst nach Tipp auf "+" gezählt wird.
-    enum Reason { case duplicate, unsure }
+    enum Phase: Equatable { case searching, holdStill, recognizing(Int), done(String), notFound, failed }
 
     var camera: Camera = .starting
     var phase: Phase = .searching
-    private(set) var liveBox: CGRect?
-    private(set) var resultBox: CGRect?
+    private(set) var parts: [SeenPart] = []
     /// Größe der Kamerabilder (hochkant), um Rahmen auf die Vorschau umzurechnen.
     private(set) var imageSize = CGSize(width: 1080, height: 1920)
 
@@ -24,34 +32,21 @@ final class Scanner: NSObject {
     @ObservationIgnored var basket: Basket?
     @ObservationIgnored private let videoQueue = DispatchQueue(label: "scanner.video")
     @ObservationIgnored nonisolated(unsafe) private let analyzer = FrameAnalyzer() // nur auf videoQueue
-    /// Zuletzt gezähltes Teil. Wird es direkt wieder erkannt (z. B. weil das iPhone bewegt wurde),
-    /// zählt es erst nach Bestätigung. Ein leerer Tisch dazwischen setzt das zurück.
-    /// `pending` = Treffer, der auf "+" wartet (Duplikat oder unsicher).
-    @ObservationIgnored private var lastAddedPart: String? // nur Teilenummer: die Farbschätzung kann beim Verschieben schwanken
-    @ObservationIgnored private var pending: ScanResult?
-    /// Wann das Tracking zuletzt ein gezähltes Teil verloren hat (z. B. bei starkem Wackeln).
-    @ObservationIgnored private var lostAt: Date?
-    /// So lange gilt dasselbe Teil danach als "wiedergefunden" statt "schon gezählt".
+    /// Gezählte Teile, die das Tracking gerade verloren hat (Wackeln, kurz verdeckt). Tauchen sie innerhalb
+    /// von `reacquireSeconds` wieder auf, werden sie nicht noch einmal gezählt.
+    @ObservationIgnored private var recentlyLost: [(candidates: [String], at: Date)] = []
     static let reacquireSeconds: TimeInterval = 5
 
-    /// Scanfeld: Quadrat, 60 % der Bildbreite, etwas über der Mitte. Nur hier wird nach Bewegung
-    /// gesucht, erkannt und die Farbe gemessen, damit Tasse, Hand & Co. daneben nicht stören.
+    /// Scanfeld: 80 % der Bildbreite, quadratisch, etwas über der Mitte. Nur hier wird gesucht und erkannt.
     // Kalibrierung: Größe/Lage hier ändern, Anzeige passt sich automatisch an.
     nonisolated static func scanArea(imageSize: CGSize) -> CGRect {
-        let height = 0.6 * imageSize.width / imageSize.height
-        return CGRect(x: 0.2, y: 0.45 - height / 2, width: 0.6, height: height)
+        let height = 0.8 * imageSize.width / imageSize.height
+        return CGRect(x: 0.1, y: 0.45 - height / 2, width: 0.8, height: height)
     }
 
     var scanArea: CGRect { Self.scanArea(imageSize: imageSize) }
 
-    /// Rahmen, der gerade auf dem Bildschirm zu sehen sein soll.
-    var displayBox: CGRect? {
-        switch phase {
-        case .found, .confirm: resultBox
-        case .holdStill, .recognizing: liveBox
-        default: nil
-        }
-    }
+    var hasUnsure: Bool { parts.contains { $0.state == .unsure } }
 
     func start() async {
         guard camera == .starting else { return }
@@ -74,7 +69,8 @@ final class Scanner: NSObject {
         output.setSampleBufferDelegate(self, queue: videoQueue)
 
         session.beginConfiguration()
-        session.sessionPreset = .hd1920x1080
+        // 4K, damit kleine Teile im Ausschnitt genug Pixel für Brickognize haben (bei 1080p nur ~60 px).
+        session.sessionPreset = session.canSetSessionPreset(.hd4K3840x2160) ? .hd4K3840x2160 : .hd1920x1080
         if session.canAddInput(input) { session.addInput(input) }
         if session.canAddOutput(output) { session.addOutput(output) }
         output.connection(with: .video)?.videoRotationAngle = 90 // Bilder hochkant
@@ -91,95 +87,126 @@ final class Scanner: NSObject {
         videoQueue.async { running ? session.startRunning() : session.stopRunning() }
     }
 
-    /// Teil aus einem Foto der Mediathek scannen.
+    /// Teile aus einem Foto der Mediathek scannen (auch mehrere).
     func scan(photo: UIImage) {
-        Task { await recognize(photo, thumb: nil) }
+        guard let image = photo.uprightResized(maxSide: 1024).cgImage else { return }
+        phase = .recognizing(0)
+        Task {
+            let regions = await Task.detached { PartFinder.find(in: image) }.value
+            await recognize(regions, area: nil, thumb: nil)
+        }
     }
 
-    /// Wartenden Treffer (Duplikat oder unsicher) doch zählen.
-    func confirmPending() {
-        guard let pending, case .confirm(let text, _) = phase else { return }
-        add(pending)
-        self.pending = nil
-        phase = .found(text)
-    }
-
-    private func add(_ scan: ScanResult) {
+    /// Orange (unsicher) erkanntes Teil per Antippen doch zählen.
+    func confirm(_ id: SeenPart.ID) {
+        guard let index = parts.firstIndex(where: { $0.id == id }), parts[index].state == .unsure else { return }
+        let scan = parts[index].scan
+        if let listing = scan.listingID {
+            Brickognize.sendFeedback(listingID: listing, partID: scan.item.id, correct: true)
+        }
         basket?.add(scan)
-        lastAddedPart = scan.item.id
+        parts[index].state = .counted
+        phase = .done(parts[index].label)
     }
 
-    private func handle(_ decision: FrameAnalyzer.Decision, box: CGRect?, still: UIImage?, thumb: [UInt8], size: CGSize) {
+    private func handle(moved: [(UUID, CGRect)], lost: [UUID], decision: FrameAnalyzer.Decision,
+                        regions: [FoundRegion]?, area: CGRect, thumb: [UInt8], size: CGSize) {
         imageSize = size
-        liveBox = box
-        guard phase != .recognizing else { return }
+        for (id, box) in moved {
+            if let index = parts.firstIndex(where: { $0.id == id }) { parts[index].box = box }
+        }
+        for id in lost {
+            guard let index = parts.firstIndex(where: { $0.id == id }) else { continue }
+            if parts[index].state == .counted { recentlyLost.append((parts[index].scan.candidates, .now)) }
+            parts.remove(at: index)
+        }
+
+        if case .recognizing = phase { return }
         switch decision {
-        case .moving:
-            phase = .searching
-            pending = nil
-        case .settling: phase = .holdStill
-        case .idle: break // Ergebnis stehen lassen, bis sich wieder etwas bewegt
-        case .scan: if let still { Task { await recognize(still, thumb: thumb) } }
+        case .moving: if parts.isEmpty { phase = .searching }
+        case .settling: if parts.isEmpty { phase = .holdStill }
+        case .idle: break
+        case .scan:
+            guard let regions else { break }
+            Task { await recognize(regions, area: area, thumb: thumb) }
         }
     }
 
-    /// Verfolgtes Teil hat sich bewegt (iPhone gewackelt o. Ä.): Rahmen mitführen, sonst nichts tun.
-    private func follow(_ box: CGRect, size: CGSize) {
-        imageSize = size
-        switch phase {
-        case .found, .confirm: resultBox = box
-        default: break
+    /// Alle neuen Bereiche gleichzeitig an Brickognize, Ergebnisse zählen bzw. zum Bestätigen anzeigen.
+    /// `area` = Scanfeld (nur Kamera), nil bei Fotos aus der Mediathek.
+    private func recognize(_ regions: [FoundRegion], area: CGRect?, thumb: [UInt8]?) async {
+        defer {
+            let analyzer = analyzer
+            videoQueue.async { analyzer.busy = false }
         }
-    }
-
-    /// Teil ist aus dem Bild (weggenommen, verdeckt): wieder auf das nächste Teil warten.
-    private func trackingLost() {
-        switch phase {
-        case .found, .confirm:
-            lostAt = .now
-            phase = .searching
-            resultBox = nil
-            pending = nil
-        default: break
-        }
-    }
-
-    private func recognize(_ image: UIImage, thumb: [UInt8]?) async {
-        phase = .recognizing
-        resultBox = nil
-        do {
-            let (result, empty) = try await Brickognize.identify(image)
-            if let scan = result {
-                let text = [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ")
-                // Rahmen nur fürs Kamerabild; Brickognize kennt nur den Ausschnitt → auf Gesamtbild umrechnen
-                resultBox = thumb == nil ? nil : scan.box?.mapped(into: scanArea)
-                // Nur sperren, solange das Teil noch im Warenkorb liegt (nach "Leeren" oder Löschen zählt es wieder).
-                let stillInBasket = lastAddedPart.map { part in basket?.items.contains { $0.partID == part } == true } == true
-                let duplicate = thumb != nil && stillInBasket && lastAddedPart.map(scan.candidates.contains) == true
-                let reacquired = duplicate && lostAt.map { Date.now.timeIntervalSince($0) < Self.reacquireSeconds } == true
-                lostAt = nil
-                if reacquired {
-                    phase = .found(text) // dasselbe Teil nach kurzem Tracking-Verlust: einfach weiter festhalten
-                } else if scan.item.score < Brickognize.sureScore || duplicate {
-                    pending = scan
-                    phase = .confirm(text, scan.item.score < Brickognize.sureScore ? .unsure : .duplicate)
-                } else {
-                    add(scan)
-                    phase = .found(text)
-                }
-            } else {
-                if empty { lastAddedPart = nil } // nur ein wirklich leerer Rahmen hebt die Duplikatsperre auf
+        guard !regions.isEmpty else {
+            // Kamera: alles im Bild wird schon verfolgt → nichts zu tun. Sonst: leerer Tisch.
+            if parts.isEmpty {
                 phase = .notFound
-                if let thumb { let analyzer = analyzer; videoQueue.async { analyzer.empty = thumb } }
+                markEmpty(thumb)
             }
-        } catch {
+            return
+        }
+        phase = .recognizing(regions.count)
+
+        let outcomes = await withTaskGroup(of: (FoundRegion, Result<ScanResult?, Error>).self) { group in
+            for region in regions {
+                group.addTask {
+                    do { return (region, .success(try await Brickognize.identify(region.image).result)) }
+                    catch { return (region, .failure(error)) }
+                }
+            }
+            return await group.reduce(into: []) { $0.append($1) }
+        }
+
+        recentlyLost.removeAll { Date.now.timeIntervalSince($0.at) > Self.reacquireSeconds }
+        var newlyCounted: [String] = [], recognized = 0, failed = 0
+        for (region, outcome) in outcomes {
+            guard case .success(let result) = outcome else { failed += 1; continue }
+            guard let scan = result else { // kein LEGO (Holzmaserung, Tasse …): eine Weile nicht wieder fragen
+                if let area {
+                    let analyzer = analyzer, box = region.box.mapped(into: area)
+                    videoQueue.async { analyzer.ignore(box) }
+                }
+                continue
+            }
+            recognized += 1
+            let state: SeenPart.State
+            if let index = recentlyLost.firstIndex(where: { !Set($0.candidates).isDisjoint(with: scan.candidates) }) {
+                recentlyLost.remove(at: index) // dasselbe Teil, nur kurz aus dem Tracking gefallen
+                state = .counted
+            } else if scan.item.score < Brickognize.sureScore {
+                state = .unsure
+            } else {
+                basket?.add(scan)
+                newlyCounted.append([scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · "))
+                state = .counted
+            }
+            guard let area else { continue } // Mediathek: keine Rahmen im Kamerabild
+            // Brickognize-Rahmen (relativ zum Ausschnitt) ist genauer als der grobe Suchrahmen
+            let box = (scan.box?.mapped(into: region.cropRect) ?? region.box).mapped(into: area)
+            let part = SeenPart(box: box, scan: scan, state: state)
+            parts.append(part)
+            let analyzer = analyzer
+            videoQueue.async { analyzer.startTracking(part.id, box: box) }
+        }
+
+        if !newlyCounted.isEmpty {
+            phase = .done(newlyCounted.count == 1 ? newlyCounted[0] : "\(newlyCounted.count) Teile gezählt")
+        } else if recognized > 0 {
+            phase = .done(parts.count == 1 ? parts[0].label : "\(parts.count) Teile im Bild")
+        } else if failed > 0 {
             phase = .failed
+        } else {
+            phase = .notFound
+            if parts.isEmpty { markEmpty(thumb) }
         }
-        let analyzer = analyzer, track = resultBox
-        videoQueue.async {
-            if let track { analyzer.startTracking(track) } // Teil ab jetzt festhalten
-            analyzer.busy = false
-        }
+    }
+
+    private func markEmpty(_ thumb: [UInt8]?) {
+        guard let thumb else { return }
+        let analyzer = analyzer
+        videoQueue.async { analyzer.empty = thumb }
     }
 }
 
@@ -188,94 +215,113 @@ extension Scanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         guard analyzer.nextFrame(), let pixels = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         let size = CGSize(width: CVPixelBufferGetWidth(pixels), height: CVPixelBufferGetHeight(pixels))
         let area = Scanner.scanArea(imageSize: size)
+        let (moved, lost) = analyzer.trackAll(pixels, area: area)
         let thumb = FrameAnalyzer.thumbnail(pixels, area: area)
-        switch analyzer.track(pixels, area: area, thumb: thumb) {
-        case .holding(let box):
-            Task { @MainActor in self.follow(box, size: size) }
-            return // Teil ist noch da: kein neuer Scan, egal wie es wackelt
-        case .lost:
-            Task { @MainActor in self.trackingLost() }
-        case .off:
-            break
-        }
         let decision = analyzer.evaluate(thumb)
-        let box = decision == .idle ? nil : FrameAnalyzer.salientBox(pixels, area: area)
-        let still = decision == .scan ? FrameAnalyzer.image(from: pixels, area: area) : nil
-        Task { @MainActor in self.handle(decision, box: box, still: still, thumb: thumb, size: size) }
+
+        var regions: [FoundRegion]?
+        if decision == .scan, let roi = FrameAnalyzer.cgImage(from: pixels, area: area) {
+            // Nur Bereiche, die noch kein verfolgtes Teil sind: Wackeln kostet so keine Netzwerk-Anfragen.
+            let tracked = analyzer.trackedBoxes, ignored = analyzer.ignoredBoxes
+            regions = PartFinder.find(in: roi).filter { region in
+                let full = region.box.mapped(into: area)
+                return !tracked.contains { PartFinder.overlap($0, full) > 0.3 }
+                    && !ignored.contains { PartFinder.overlap($0, full) > 0.5 }
+            }
+            #if DEBUG
+            print("SCAN Bereiche neu: \(regions?.count ?? 0), verfolgt: \(tracked.count)")
+            #endif
+        }
+        Task { @MainActor in
+            self.handle(moved: moved, lost: lost, decision: decision, regions: regions, area: area, thumb: thumb, size: size)
+        }
     }
 }
 
-/// Bewegungs- und "Neues Teil"-Erkennung auf einem 32×32-Helligkeitsraster (Bereichsmittel,
-/// dadurch unempfindlich gegen Bildrauschen und leichtes Zittern der Hand). Nur auf der Video-Queue benutzen.
+/// Bewegungserkennung (32×32-Helligkeitsraster) und Tracking der erkannten Teile. Nur auf der Video-Queue benutzen.
 final class FrameAnalyzer {
     enum Decision { case moving, settling, idle, scan }
 
-    // Kalibrierung (am echten iPhone nachjustieren):
+    // Kalibrierung (am echten iPhone gemessen):
     static let frameStride = 2       // jedes 2. Kamerabild analysieren (≈ 15 pro Sekunde)
     static let cellDelta = 20        // ab dieser Helligkeitsänderung (0–255) zählt eine Rasterzelle als verändert
     static let motionShare = 0.02    // > 2 % veränderte Zellen zur letzten Analyse = Bewegung
-    static let newSceneShare = 0.05  // > 5 % Unterschied zum zuletzt gescannten Bild = neues Teil
+    static let newSceneShare = 0.05  // > 5 % Unterschied zum zuletzt gescannten Bild = etwas Neues
                                      // (gemessen: ruhiges Bild schwankt bis 0,023, Teilewechsel ≈ 0,3)
     static let stillNeeded = 5       // so viele ruhige Analysen in Folge (≈ 0,33 s), dann wird gescannt
-
-    // Tracking des erkannten Teils (Vision). Kalibrierung:
     static let trackConfidence: Float = 0.3 // darunter gilt ein Frame als "Teil nicht sicher gefunden"
-    static let lostAfter = 4                // so viele unsichere Frames in Folge (≈ 0,27 s) = Teil weg
-
-    enum Tracking { case off, holding(CGRect), lost }
-
-    private let sequence = VNSequenceRequestHandler()
-    private var tracked: VNDetectedObjectObservation?
-    private var weakFrames = 0
+    static let lostAfter = 4         // so viele unsichere Frames in Folge (≈ 0,27 s) = Teil weg
+    static let maxTracked = 8
 
     var busy = false
-    private var lastScan: [UInt8]?
     var empty: [UInt8]?              // Bild, auf dem zuletzt kein Teil war (z. B. leerer Tisch)
+    private var lastScan: [UInt8]?
     private var previous: [UInt8]?
     private var movedSinceScan = true // ohne Bewegung seit dem letzten Scan wird nie neu gescannt
     private var still = 0
     private var frame = 0
 
-    /// Rahmen (normiert, Ursprung oben links) ab jetzt verfolgen.
-    func startTracking(_ box: CGRect) {
-        tracked = VNDetectedObjectObservation(boundingBox: CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height))
-        weakFrames = 0
+    /// Stellen ohne LEGO-Teil (laut Brickognize): werden eine Weile nicht wieder angefragt.
+    static let ignoreSeconds: TimeInterval = 8
+    private var ignored: [(box: CGRect, until: Date)] = []
+    var ignoredBoxes: [CGRect] {
+        ignored.removeAll { $0.until < .now }
+        return ignored.map(\.box)
     }
+    func ignore(_ box: CGRect) { ignored.append((box, .now + Self.ignoreSeconds)) }
 
-    /// Verfolgt das erkannte Teil. Solange es gehalten wird, gilt das aktuelle Bild als "schon gescannt".
-    func track(_ pixels: CVPixelBuffer, area: CGRect, thumb: [UInt8]) -> Tracking {
-        guard let tracked else { return .off }
-        let request = VNTrackObjectRequest(detectedObjectObservation: tracked)
-        request.trackingLevel = .accurate
-        try? sequence.perform([request], on: pixels)
-        guard let result = request.results?.first as? VNDetectedObjectObservation else {
-            self.tracked = nil
-            return .lost
-        }
-        let b = result.boundingBox
-        let box = CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height)
-        let inFrame = area.contains(CGPoint(x: box.midX, y: box.midY))
-        weakFrames = result.confidence >= Self.trackConfidence && inFrame ? 0 : weakFrames + 1
-        #if DEBUG
-        print(String(format: "TRACK conf %.2f imRahmen %d schwach %d", result.confidence, inFrame ? 1 : 0, weakFrames))
-        #endif
-        guard weakFrames < Self.lostAfter else {
-            self.tracked = nil
-            return .lost
-        }
-        self.tracked = result
-        // Szene merken: geht das Tracking später verloren, das Teil liegt aber noch da, wird nicht neu gescannt.
-        previous = thumb
-        lastScan = thumb
-        still = 0
-        movedSinceScan = false
-        return .holding(box)
-    }
+    private let sequence = VNSequenceRequestHandler()
+    private var tracks: [UUID: (observation: VNDetectedObjectObservation, weak: Int)] = [:]
 
     func nextFrame() -> Bool {
         frame += 1
         return frame % Self.frameStride == 0
     }
+
+    // MARK: Tracking
+
+    var trackedBoxes: [CGRect] { tracks.values.map { Self.topLeft($0.observation.boundingBox) } }
+
+    func startTracking(_ id: UUID, box: CGRect) {
+        guard tracks.count < Self.maxTracked else { return }
+        let vision = CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height)
+        tracks[id] = (VNDetectedObjectObservation(boundingBox: vision), 0)
+    }
+
+    /// Alle verfolgten Teile ein Bild weiter: neue Rahmen und welche verloren gingen.
+    func trackAll(_ pixels: CVPixelBuffer, area: CGRect) -> (moved: [(UUID, CGRect)], lost: [UUID]) {
+        guard !tracks.isEmpty else { return ([], []) }
+        let ids = Array(tracks.keys)
+        let requests = ids.map { id in
+            let request = VNTrackObjectRequest(detectedObjectObservation: tracks[id]!.observation)
+            request.trackingLevel = .accurate
+            return request
+        }
+        try? sequence.perform(requests, on: pixels)
+        var moved: [(UUID, CGRect)] = [], lost: [UUID] = []
+        for (id, request) in zip(ids, requests) {
+            guard let result = request.results?.first as? VNDetectedObjectObservation else {
+                tracks[id] = nil
+                lost.append(id)
+                continue
+            }
+            let box = Self.topLeft(result.boundingBox)
+            let ok = result.confidence >= Self.trackConfidence && area.contains(CGPoint(x: box.midX, y: box.midY))
+            let weak = ok ? 0 : tracks[id]!.weak + 1
+            if weak >= Self.lostAfter {
+                tracks[id] = nil
+                lost.append(id)
+            } else {
+                tracks[id] = (result, weak)
+                moved.append((id, box))
+            }
+        }
+        return (moved, lost)
+    }
+
+    private static func topLeft(_ b: CGRect) -> CGRect { CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height) }
+
+    // MARK: Bewegung
 
     func evaluate(_ thumb: [UInt8]) -> Decision {
         defer { previous = thumb }
@@ -297,10 +343,6 @@ final class FrameAnalyzer {
             lastScan = thumb
             movedSinceScan = false
         }
-        #if DEBUG
-        print(String(format: "SCAN motion %.3f still %d vomLetzten %.3f vomLeeren %.3f busy %d → %@",
-                     motion, still, fromLast, fromEmpty, busy ? 1 : 0, "\(decision)"))
-        #endif
         return decision
     }
 
@@ -332,25 +374,15 @@ final class FrameAnalyzer {
         return error == kvImageNoError ? cells : []
     }
 
-    /// Rahmen um das auffälligste Objekt im Scanfeld (normiert aufs Gesamtbild, Ursprung oben links), nur für die Anzeige.
-    static func salientBox(_ pixels: CVPixelBuffer, area: CGRect) -> CGRect? {
-        let request = VNGenerateObjectnessBasedSaliencyImageRequest()
-        request.regionOfInterest = CGRect(x: area.minX, y: 1 - area.maxY, width: area.width, height: area.height) // Vision: Ursprung unten links
-        try? VNImageRequestHandler(cvPixelBuffer: pixels).perform([request])
-        guard let b = request.results?.first?.salientObjects?.max(by: { $0.confidence < $1.confidence })?.boundingBox
-        else { return nil }
-        return CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height).mapped(into: area)
-    }
-
     private static let ciContext = CIContext()
 
     /// Kamerabild, auf das Scanfeld zugeschnitten.
-    static func image(from pixels: CVPixelBuffer, area: CGRect) -> UIImage? {
+    static func cgImage(from pixels: CVPixelBuffer, area: CGRect) -> CGImage? {
         let image = CIImage(cvPixelBuffer: pixels)
         guard let full = ciContext.createCGImage(image, from: image.extent) else { return nil }
         let crop = CGRect(x: area.minX * CGFloat(full.width), y: area.minY * CGFloat(full.height),
                           width: area.width * CGFloat(full.width), height: area.height * CGFloat(full.height)).integral
-        return full.cropping(to: crop).map { UIImage(cgImage: $0) }
+        return full.cropping(to: crop)
     }
 }
 

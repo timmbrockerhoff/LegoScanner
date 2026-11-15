@@ -14,8 +14,19 @@ struct BasketView: View {
                 } else {
                     List {
                         Section {
-                            ForEach($basket.items) { BasketRow(item: $0) }
-                                .onDelete { basket.items.remove(atOffsets: $0) }
+                            ForEach($basket.items) { $item in
+                                BasketRow(item: $item)
+                                    .swipeActions {
+                                        Button("Löschen", systemImage: "trash", role: .destructive) { basket.remove(item.id) }
+                                        Button("Falsch erkannt", systemImage: "hand.thumbsdown") {
+                                            if let listing = item.listingID {
+                                                Brickognize.sendFeedback(listingID: listing, partID: item.partID, correct: false)
+                                            }
+                                            basket.remove(item.id)
+                                        }
+                                        .tint(.orange)
+                                    }
+                            }
                         } header: {
                             Text(basket.totalCount == 1 ? "1 Teil" : "\(basket.totalCount) Teile, \(basket.items.count) verschiedene")
                         } footer: {
@@ -73,6 +84,12 @@ private struct BasketRow: View {
                         .pickerStyle(.menu)
                         .labelsHidden()
                         .fixedSize()
+                        .onChange(of: item.colorID) { _, newColor in
+                            // Nutzer korrigiert die Farbe → merken, damit der nächste Scan es richtig macht
+                            if let newColor, let measured = item.measured {
+                                ColorMemory.learn(measured: measured, colorID: newColor)
+                            }
+                        }
                     }
                 }
                 Stepper("\(item.count) Stück", value: $item.count, in: 1...999)

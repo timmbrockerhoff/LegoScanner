@@ -1,6 +1,7 @@
 import UIKit
 
 struct BrickognizeResponse: Decodable {
+    let listing_id: String?
     let items: [Item]
     let bounding_box: Box?
 
@@ -39,15 +40,35 @@ struct ScanResult {
     let candidates: [String]
     let color: LegoColor?
     let box: CGRect?
+    let listingID: String?        // für Feedback an Brickognize
+    let measured: SIMD3<Double>?  // gemessene Farbe, damit Korrekturen gelernt werden können
 }
 
 enum Brickognize {
+    /// Rückmeldung an Brickognize, ob die Erkennung stimmte. Damit lernt deren Modell dazu.
+    /// Gesendet werden nur IDs (Suchergebnis + Teilenummer), kein Bild.
+    static func sendFeedback(listingID: String, partID: String, correct: Bool) {
+        var request = URLRequest(url: URL(string: "https://api.brickognize.com/feedback/")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONSerialization.data(withJSONObject: [
+            "listing_id": listingID, "item_id": partID, "item_type": "part",
+            "is_prediction_correct": correct, "source": "external-app", "item_rank": 0,
+        ])
+        Task.detached {
+            let status = ((try? await URLSession.shared.data(for: request))?.1 as? HTTPURLResponse)?.statusCode
+            #if DEBUG
+            print("FEEDBACK", partID, correct ? "richtig" : "falsch", "→ HTTP", status ?? -1)
+            #endif
+        }
+    }
+
     /// Brickognize liefert immer das ähnlichste LEGO-Teil, auch für eine Tasse. Deshalb zwei Schwellen:
     /// unter `minScore` = nichts erkannt, ab `sureScore` = sicher, dazwischen fragt die App nach.
     // Kalibrierung (gemessen): echte Teile 0,79–0,90, gelbe Tasse 0,52 ("Duplo Ball Tube").
     // Fallen echte Teile bei schlechtem Licht durch, minScore senken.
     static let minScore = 0.65
-    static let sureScore = 0.75
+    static let sureScore = 0.8 // mehrere kleine Teile: "Wedge Plate" (falsch) kam mit 75 % durch, echte Teile live 83–91 %
 
     /// Foto → bester Treffer mit Farbe (nil, wenn kein Teil sicher erkannt wurde).
     /// `empty` = Brickognize hat gar nichts gefunden, z. B. leerer Tisch.
@@ -65,12 +86,14 @@ enum Brickognize {
         let box = response.bounding_box?.normalized
         let colors = Rebrickable.colors(forPart: top.id)
         let measured = box.flatMap { box in upright.cgImage.flatMap { partColor(in: $0, box: box) } }
-        let color = measured.flatMap { colors.best(for: $0) } ?? colors.first
+        // Erst gelernte Korrekturen des Nutzers, dann die allgemeine Farbwahl.
+        let color = ColorMemory.choose(measured, among: colors) ?? measured.flatMap { colors.best(for: $0) } ?? colors.first
         #if DEBUG
         print("SCAN Farbe gemessen:", measured.map { "\(Int($0.x)),\(Int($0.y)),\(Int($0.z))" } ?? "–", "→", color?.name ?? "–")
         #endif
         let candidates = response.items.filter { $0.score >= 0.5 }.map(\.id)
-        return (ScanResult(item: top, candidates: candidates, color: color, box: box), false)
+        return (ScanResult(item: top, candidates: candidates, color: color, box: box,
+                           listingID: response.listing_id, measured: measured), false)
     }
 
     /// `image` sollte schon `uprightResized` sein, damit der Rahmen zu den Pixeln passt.

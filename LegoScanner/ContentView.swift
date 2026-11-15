@@ -83,26 +83,20 @@ struct ContentView: View {
         HStack(spacing: 8) {
             switch scanner.phase {
             case .searching:
-                Label("Leg ein Teil in den Rahmen", systemImage: "viewfinder")
+                Label("Leg Teile in den Rahmen", systemImage: "viewfinder")
             case .holdStill:
                 Label("Stillhalten …", systemImage: "hand.raised")
-            case .recognizing:
+            case .recognizing(let count):
                 ProgressView()
-                Text("Erkenne …")
-            case .found(let text):
-                Label { Text(text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
-            case .confirm(let text, let reason):
-                Label {
-                    Text(reason == .duplicate ? "Schon gezählt: \(text)" : "Unsicher: \(text)?")
-                } icon: {
-                    Image(systemName: reason == .duplicate ? "checkmark.circle" : "questionmark.circle")
-                        .foregroundStyle(.orange)
+                Text(count > 1 ? "Erkenne \(count) Teile …" : "Erkenne …")
+            case .done(let text):
+                if scanner.hasUnsure {
+                    Label { Text("Orange antippen zum Zählen") } icon: {
+                        Image(systemName: "hand.tap").foregroundStyle(.orange)
+                    }
+                } else {
+                    Label { Text(text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
                 }
-                Button("Doch zählen", systemImage: "plus") { scanner.confirmPending() }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.small)
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Noch einmal zählen")
             case .notFound:
                 Label("Kein Teil erkannt", systemImage: "questionmark.circle")
             case .failed:
@@ -135,28 +129,41 @@ struct ContentView: View {
         .allowsHitTesting(false)
     }
 
+    /// Ein Rahmen pro erkanntem Teil, mit Namen darüber. Grün = gezählt, orange = unsicher (antippen zählt).
     private var boxOverlay: some View {
         GeometryReader { geo in
-            if let box = scanner.displayBox {
-                let rect = previewRect(box, image: scanner.imageSize, view: geo.size)
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(boxColor, lineWidth: 3)
-                    .shadow(color: .black.opacity(0.4), radius: 4)
-                    .frame(width: rect.width, height: rect.height)
-                    .position(x: rect.midX, y: rect.midY)
+            ForEach(scanner.parts) { part in
+                let rect = previewRect(part.box, image: scanner.imageSize, view: geo.size)
+                let color: Color = part.state == .counted ? .green : .orange
+                ZStack(alignment: .top) {
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(color, lineWidth: 3)
+                        .shadow(color: .black.opacity(0.4), radius: 4)
+                        .contentShape(.rect(cornerRadius: 14))
+                    Label {
+                        Text(part.label)
+                    } icon: {
+                        Image(systemName: part.state == .counted ? "checkmark.circle.fill" : "plus.circle.fill")
+                            .foregroundStyle(color)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .fixedSize()
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .glassEffect()
+                    .offset(y: -30)
+                }
+                .frame(width: rect.width, height: rect.height)
+                .position(x: rect.midX, y: rect.midY)
+                .onTapGesture { scanner.confirm(part.id) }
+                .allowsHitTesting(part.state == .unsure)
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(part.state == .unsure ? .isButton : [])
+                .accessibilityHint(part.state == .unsure ? "Antippen, um das Teil zu zählen" : "")
             }
         }
-        .animation(.smooth(duration: 0.25), value: scanner.displayBox)
-        .allowsHitTesting(false)
-    }
-
-    private var boxColor: Color {
-        switch scanner.phase {
-        case .found: .green
-        case .confirm: .orange
-        case .recognizing: .yellow
-        default: .white
-        }
+        .animation(.smooth(duration: 0.25), value: scanner.parts.map(\.box))
     }
 }
 
