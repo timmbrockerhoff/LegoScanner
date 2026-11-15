@@ -29,6 +29,10 @@ final class Scanner: NSObject {
     /// `pending` = Treffer, der auf "+" wartet (Duplikat oder unsicher).
     @ObservationIgnored private var lastAddedPart: String? // nur Teilenummer: die Farbschätzung kann beim Verschieben schwanken
     @ObservationIgnored private var pending: ScanResult?
+    /// Wann das Tracking zuletzt ein gezähltes Teil verloren hat (z. B. bei starkem Wackeln).
+    @ObservationIgnored private var lostAt: Date?
+    /// So lange gilt dasselbe Teil danach als "wiedergefunden" statt "schon gezählt".
+    static let reacquireSeconds: TimeInterval = 5
 
     /// Scanfeld: Quadrat, 60 % der Bildbreite, etwas über der Mitte. Nur hier wird nach Bewegung
     /// gesucht, erkannt und die Farbe gemessen, damit Tasse, Hand & Co. daneben nicht stören.
@@ -119,6 +123,27 @@ final class Scanner: NSObject {
         }
     }
 
+    /// Verfolgtes Teil hat sich bewegt (iPhone gewackelt o. Ä.): Rahmen mitführen, sonst nichts tun.
+    private func follow(_ box: CGRect, size: CGSize) {
+        imageSize = size
+        switch phase {
+        case .found, .confirm: resultBox = box
+        default: break
+        }
+    }
+
+    /// Teil ist aus dem Bild (weggenommen, verdeckt): wieder auf das nächste Teil warten.
+    private func trackingLost() {
+        switch phase {
+        case .found, .confirm:
+            lostAt = .now
+            phase = .searching
+            resultBox = nil
+            pending = nil
+        default: break
+        }
+    }
+
     private func recognize(_ image: UIImage, thumb: [UInt8]?) async {
         phase = .recognizing
         resultBox = nil
@@ -131,7 +156,11 @@ final class Scanner: NSObject {
                 // Nur sperren, solange das Teil noch im Warenkorb liegt (nach "Leeren" oder Löschen zählt es wieder).
                 let stillInBasket = lastAddedPart.map { part in basket?.items.contains { $0.partID == part } == true } == true
                 let duplicate = thumb != nil && stillInBasket && lastAddedPart.map(scan.candidates.contains) == true
-                if scan.item.score < Brickognize.sureScore || duplicate {
+                let reacquired = duplicate && lostAt.map { Date.now.timeIntervalSince($0) < Self.reacquireSeconds } == true
+                lostAt = nil
+                if reacquired {
+                    phase = .found(text) // dasselbe Teil nach kurzem Tracking-Verlust: einfach weiter festhalten
+                } else if scan.item.score < Brickognize.sureScore || duplicate {
                     pending = scan
                     phase = .confirm(text, scan.item.score < Brickognize.sureScore ? .unsure : .duplicate)
                 } else {
@@ -146,8 +175,11 @@ final class Scanner: NSObject {
         } catch {
             phase = .failed
         }
-        let analyzer = analyzer
-        videoQueue.async { analyzer.busy = false }
+        let analyzer = analyzer, track = resultBox
+        videoQueue.async {
+            if let track { analyzer.startTracking(track) } // Teil ab jetzt festhalten
+            analyzer.busy = false
+        }
     }
 }
 
@@ -157,6 +189,15 @@ extension Scanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         let size = CGSize(width: CVPixelBufferGetWidth(pixels), height: CVPixelBufferGetHeight(pixels))
         let area = Scanner.scanArea(imageSize: size)
         let thumb = FrameAnalyzer.thumbnail(pixels, area: area)
+        switch analyzer.track(pixels, area: area, thumb: thumb) {
+        case .holding(let box):
+            Task { @MainActor in self.follow(box, size: size) }
+            return // Teil ist noch da: kein neuer Scan, egal wie es wackelt
+        case .lost:
+            Task { @MainActor in self.trackingLost() }
+        case .off:
+            break
+        }
         let decision = analyzer.evaluate(thumb)
         let box = decision == .idle ? nil : FrameAnalyzer.salientBox(pixels, area: area)
         let still = decision == .scan ? FrameAnalyzer.image(from: pixels, area: area) : nil
@@ -177,6 +218,16 @@ final class FrameAnalyzer {
                                      // (gemessen: ruhiges Bild schwankt bis 0,023, Teilewechsel ≈ 0,3)
     static let stillNeeded = 6       // so viele ruhige Analysen in Folge (≈ 0,6 s), dann wird gescannt
 
+    // Tracking des erkannten Teils (Vision). Kalibrierung:
+    static let trackConfidence: Float = 0.3 // darunter gilt ein Frame als "Teil nicht sicher gefunden"
+    static let lostAfter = 3                // so viele unsichere Frames in Folge (≈ 0,3 s) = Teil weg
+
+    enum Tracking { case off, holding(CGRect), lost }
+
+    private let sequence = VNSequenceRequestHandler()
+    private var tracked: VNDetectedObjectObservation?
+    private var weakFrames = 0
+
     var busy = false
     private var lastScan: [UInt8]?
     var empty: [UInt8]?              // Bild, auf dem zuletzt kein Teil war (z. B. leerer Tisch)
@@ -184,6 +235,42 @@ final class FrameAnalyzer {
     private var movedSinceScan = true // ohne Bewegung seit dem letzten Scan wird nie neu gescannt
     private var still = 0
     private var frame = 0
+
+    /// Rahmen (normiert, Ursprung oben links) ab jetzt verfolgen.
+    func startTracking(_ box: CGRect) {
+        tracked = VNDetectedObjectObservation(boundingBox: CGRect(x: box.minX, y: 1 - box.maxY, width: box.width, height: box.height))
+        weakFrames = 0
+    }
+
+    /// Verfolgt das erkannte Teil. Solange es gehalten wird, gilt das aktuelle Bild als "schon gescannt".
+    func track(_ pixels: CVPixelBuffer, area: CGRect, thumb: [UInt8]) -> Tracking {
+        guard let tracked else { return .off }
+        let request = VNTrackObjectRequest(detectedObjectObservation: tracked)
+        request.trackingLevel = .accurate
+        try? sequence.perform([request], on: pixels)
+        guard let result = request.results?.first as? VNDetectedObjectObservation else {
+            self.tracked = nil
+            return .lost
+        }
+        let b = result.boundingBox
+        let box = CGRect(x: b.minX, y: 1 - b.maxY, width: b.width, height: b.height)
+        let inFrame = area.contains(CGPoint(x: box.midX, y: box.midY))
+        weakFrames = result.confidence >= Self.trackConfidence && inFrame ? 0 : weakFrames + 1
+        #if DEBUG
+        print(String(format: "TRACK conf %.2f imRahmen %d schwach %d", result.confidence, inFrame ? 1 : 0, weakFrames))
+        #endif
+        guard weakFrames < Self.lostAfter else {
+            self.tracked = nil
+            return .lost
+        }
+        self.tracked = result
+        // Szene merken: geht das Tracking später verloren, das Teil liegt aber noch da, wird nicht neu gescannt.
+        previous = thumb
+        lastScan = thumb
+        still = 0
+        movedSinceScan = false
+        return .holding(box)
+    }
 
     func nextFrame() -> Bool {
         frame += 1
