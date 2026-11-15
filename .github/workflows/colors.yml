@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 tools/build_colors.py
+        env:
+          REBRICKABLE_KEY: ${{ secrets.REBRICKABLE_KEY }}   # einmalig: gh secret set REBRICKABLE_KEY
       - name: Commit, falls sich etwas geändert hat
         run: |
           git diff --quiet -- LegoScanner/colors.json && exit 0
