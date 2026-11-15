@@ -91,9 +91,14 @@ struct ContentView: View {
                 Text("Erkenne …")
             case .found(let text):
                 Label { Text(text) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
-            case .duplicate(let text):
-                Label { Text("Schon gezählt: \(text)") } icon: { Image(systemName: "checkmark.circle").foregroundStyle(.orange) }
-                Button("Doch zählen", systemImage: "plus") { scanner.confirmDuplicate() }
+            case .confirm(let text, let reason):
+                Label {
+                    Text(reason == .duplicate ? "Schon gezählt: \(text)" : "Unsicher: \(text)?")
+                } icon: {
+                    Image(systemName: reason == .duplicate ? "checkmark.circle" : "questionmark.circle")
+                        .foregroundStyle(.orange)
+                }
+                Button("Doch zählen", systemImage: "plus") { scanner.confirmPending() }
                     .buttonStyle(.glassProminent)
                     .controlSize(.small)
                     .labelStyle(.iconOnly)
@@ -110,7 +115,6 @@ struct ContentView: View {
         .padding(.vertical, 10)
         .glassEffect()
         .padding(.top, 8)
-        .animation(.default, value: scanner.phase)
     }
 
     /// Sichtbares Scanfeld: außen abgedunkelt, innen ein heller Rahmen.
@@ -149,7 +153,7 @@ struct ContentView: View {
     private var boxColor: Color {
         switch scanner.phase {
         case .found: .green
-        case .duplicate: .orange
+        case .confirm: .orange
         case .recognizing: .yellow
         default: .white
         }

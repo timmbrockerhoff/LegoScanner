@@ -9,7 +9,9 @@ import Vision
 @MainActor @Observable
 final class Scanner: NSObject {
     enum Camera { case starting, running, denied, unavailable }
-    enum Phase: Equatable { case searching, holdStill, recognizing, found(String), duplicate(String), notFound, failed }
+    enum Phase: Equatable { case searching, holdStill, recognizing, found(String), confirm(String, Reason), notFound, failed }
+    /// Warum ein Treffer erst nach Tipp auf "+" gezählt wird.
+    enum Reason { case duplicate, unsure }
 
     var camera: Camera = .starting
     var phase: Phase = .searching
@@ -24,7 +26,8 @@ final class Scanner: NSObject {
     @ObservationIgnored nonisolated(unsafe) private let analyzer = FrameAnalyzer() // nur auf videoQueue
     /// Zuletzt gezähltes Teil. Wird es direkt wieder erkannt (z. B. weil das iPhone bewegt wurde),
     /// zählt es erst nach Bestätigung. Ein leerer Tisch dazwischen setzt das zurück.
-    @ObservationIgnored private var lastAdded: (part: String, color: Int?)?
+    /// `pending` = Treffer, der auf "+" wartet (Duplikat oder unsicher).
+    @ObservationIgnored private var lastAddedPart: String? // nur Teilenummer: die Farbschätzung kann beim Verschieben schwanken
     @ObservationIgnored private var pending: ScanResult?
 
     /// Scanfeld: Quadrat, 60 % der Bildbreite, etwas über der Mitte. Nur hier wird nach Bewegung
@@ -40,7 +43,7 @@ final class Scanner: NSObject {
     /// Rahmen, der gerade auf dem Bildschirm zu sehen sein soll.
     var displayBox: CGRect? {
         switch phase {
-        case .found, .duplicate: resultBox
+        case .found, .confirm: resultBox
         case .holdStill, .recognizing: liveBox
         default: nil
         }
@@ -89,9 +92,9 @@ final class Scanner: NSObject {
         Task { await recognize(photo, thumb: nil) }
     }
 
-    /// Das gerade erkannte, schon gezählte Teil doch noch einmal zählen.
-    func confirmDuplicate() {
-        guard let pending, case .duplicate(let text) = phase else { return }
+    /// Wartenden Treffer (Duplikat oder unsicher) doch zählen.
+    func confirmPending() {
+        guard let pending, case .confirm(let text, _) = phase else { return }
         add(pending)
         self.pending = nil
         phase = .found(text)
@@ -99,7 +102,7 @@ final class Scanner: NSObject {
 
     private func add(_ scan: ScanResult) {
         basket?.add(scan)
-        lastAdded = (scan.item.id, scan.color?.id)
+        lastAddedPart = scan.item.id
     }
 
     private func handle(_ decision: FrameAnalyzer.Decision, box: CGRect?, still: UIImage?, thumb: [UInt8], size: CGSize) {
@@ -120,19 +123,21 @@ final class Scanner: NSObject {
         phase = .recognizing
         resultBox = nil
         do {
-            if let scan = try await Brickognize.identify(image) {
+            let (result, empty) = try await Brickognize.identify(image)
+            if let scan = result {
                 let text = [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ")
                 // Rahmen nur fürs Kamerabild; Brickognize kennt nur den Ausschnitt → auf Gesamtbild umrechnen
                 resultBox = thumb == nil ? nil : scan.box?.mapped(into: scanArea)
-                if thumb != nil, lastAdded?.part == scan.item.id, lastAdded?.color == scan.color?.id {
+                let duplicate = thumb != nil && lastAddedPart.map(scan.candidates.contains) == true
+                if scan.item.score < Brickognize.sureScore || duplicate {
                     pending = scan
-                    phase = .duplicate(text)
+                    phase = .confirm(text, scan.item.score < Brickognize.sureScore ? .unsure : .duplicate)
                 } else {
                     add(scan)
                     phase = .found(text)
                 }
             } else {
-                lastAdded = nil
+                if empty { lastAddedPart = nil } // nur ein wirklich leerer Rahmen hebt die Duplikatsperre auf
                 phase = .notFound
                 if let thumb { let analyzer = analyzer; videoQueue.async { analyzer.empty = thumb } }
             }

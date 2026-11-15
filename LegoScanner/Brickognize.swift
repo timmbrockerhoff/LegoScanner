@@ -34,28 +34,40 @@ enum BrickLink {
 /// Ein erkanntes Teil: bester Treffer, geschätzte Farbe und Rahmen im Bild (normiert, Ursprung oben links).
 struct ScanResult {
     let item: BrickognizeResponse.Item
+    /// Alle plausiblen Teilenummern (≥ 50 %). Aus schrägem Winkel landet ein Teil oft auf einer ähnlichen
+    /// Variante (6232 ↔ 4730); steht das zuletzt gezählte Teil hier mit drin, ist es dasselbe.
+    let candidates: [String]
     let color: LegoColor?
     let box: CGRect?
 }
 
 enum Brickognize {
-    /// Darunter gilt ein Treffer als "nichts erkannt" (z. B. leerer Tisch).
-    // Kalibrierung: echte Teile lagen im Test bei 0,79–0,9. Zu hoch → gute Teile fallen raus.
-    static let minScore = 0.5
+    /// Brickognize liefert immer das ähnlichste LEGO-Teil, auch für eine Tasse. Deshalb zwei Schwellen:
+    /// unter `minScore` = nichts erkannt, ab `sureScore` = sicher, dazwischen fragt die App nach.
+    // Kalibrierung (gemessen): echte Teile 0,79–0,90, gelbe Tasse 0,52 ("Duplo Ball Tube").
+    // Fallen echte Teile bei schlechtem Licht durch, minScore senken.
+    static let minScore = 0.65
+    static let sureScore = 0.75
 
-    /// Foto → bester Treffer mit Farbe, oder nil wenn kein Teil sicher erkannt wurde.
+    /// Foto → bester Treffer mit Farbe (nil, wenn kein Teil sicher erkannt wurde).
+    /// `empty` = Brickognize hat gar nichts gefunden, z. B. leerer Tisch.
     @MainActor
-    static func identify(_ image: UIImage) async throws -> ScanResult? {
+    static func identify(_ image: UIImage) async throws -> (result: ScanResult?, empty: Bool) {
         let upright = image.uprightResized(maxSide: 1024)
         let response = try await recognize(upright)
         #if DEBUG
         print("SCAN Ergebnis:", response.items.prefix(3).map { "\($0.id) \($0.name) \(Int($0.score * 100))%" })
         #endif
-        guard let top = response.items.first, top.score >= minScore else { return nil }
+        guard let top = response.items.first, top.score >= minScore else { return (nil, response.items.isEmpty) }
         let box = response.bounding_box?.normalized
         let colors = Rebrickable.colors(forPart: top.id)
-        let measured = box.flatMap { upright.medianColor(in: $0) }
-        return ScanResult(item: top, color: measured.flatMap { colors.best(for: $0) } ?? colors.first, box: box)
+        let measured = box.flatMap { box in upright.cgImage.flatMap { partColor(in: $0, box: box) } }
+        let color = measured.flatMap { colors.best(for: $0) } ?? colors.first
+        #if DEBUG
+        print("SCAN Farbe gemessen:", measured.map { "\(Int($0.x)),\(Int($0.y)),\(Int($0.z))" } ?? "–", "→", color?.name ?? "–")
+        #endif
+        let candidates = response.items.filter { $0.score >= 0.5 }.map(\.id)
+        return (ScanResult(item: top, candidates: candidates, color: color, box: box), false)
     }
 
     /// `image` sollte schon `uprightResized` sein, damit der Rahmen zu den Pixeln passt.
@@ -89,33 +101,5 @@ extension UIImage {
         return UIGraphicsImageRenderer(size: newSize, format: format).image { _ in
             draw(in: CGRect(origin: .zero, size: newSize))
         }
-    }
-
-    /// Median-Farbe (sRGB, 0…255) aus der Mitte eines normierten Rahmens.
-    // ponytail: nimmt nur die inneren 40 % des Rahmens gegen Hintergrund; bei sehr schrägen,
-    // dünnen Teilen kann trotzdem Untergrund reinrutschen → dann Segmentierung (Vision) nehmen.
-    func medianColor(in box: CGRect) -> SIMD3<Double>? {
-        guard let cg = cgImage else { return nil }
-        let inner = box.insetBy(dx: box.width * 0.3, dy: box.height * 0.3)
-        let rect = CGRect(x: inner.minX * CGFloat(cg.width), y: inner.minY * CGFloat(cg.height),
-                          width: inner.width * CGFloat(cg.width), height: inner.height * CGFloat(cg.height)).integral
-        guard let crop = cg.cropping(to: rect) else { return nil }
-
-        let n = 24
-        var pixels = [UInt8](repeating: 0, count: n * n * 4)
-        let drawn = pixels.withUnsafeMutableBytes { buf -> Bool in
-            guard let ctx = CGContext(data: buf.baseAddress, width: n, height: n, bitsPerComponent: 8, bytesPerRow: n * 4,
-                                      space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
-            ctx.draw(crop, in: CGRect(x: 0, y: 0, width: n, height: n))
-            return true
-        }
-        guard drawn else { return nil }
-
-        func median(_ channel: Int) -> Double {
-            let values = stride(from: channel, to: pixels.count, by: 4).map { pixels[$0] }.sorted()
-            return Double(values[values.count / 2])
-        }
-        return SIMD3(median(0), median(1), median(2))
     }
 }

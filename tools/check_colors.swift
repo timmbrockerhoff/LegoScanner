@@ -1,5 +1,5 @@
 // Selbsttest der Farbwahl. Ausführen:
-// swiftc -o /tmp/check_colors tools/check_colors.swift LegoScanner/Rebrickable.swift && /tmp/check_colors
+// mkdir -p /tmp/cc && cp tools/check_colors.swift /tmp/cc/main.swift && swiftc -o /tmp/cc/check /tmp/cc/main.swift LegoScanner/Rebrickable.swift && /tmp/cc/check
 func c(_ n: String, _ r: Double, _ g: Double, _ b: Double, _ sets: Int) -> LegoColor {
     LegoColor(id: 0, name: n, rgb: SIMD3(r, g, b), isTrans: false, bricklinkID: nil, sets: sets)
 }
@@ -12,4 +12,24 @@ assert(plate.best(for: SIMD3(108, 110, 104))?.name == "Dark Bluish Gray") // sel
 assert(plate.best(for: SIMD3(150, 158, 165))?.name == "Light Bluish Gray")
 assert(plate.best(for: SIMD3(240, 240, 235))?.name == "White")
 assert(plate.best(for: SIMD3(30, 30, 35))?.name == "Black")
+// Farbmessung: gelbe Platte schräg auf Holztisch. Der Rahmen um das Teil enthält dann viel Tisch.
+import CoreGraphics
+import simd
+func scene(part: SIMD3<Double>, table: SIMD3<Double>) -> CGImage {
+    let size = 300
+    let context = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0,
+                            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    context.setFillColor(red: table.x / 255, green: table.y / 255, blue: table.z / 255, alpha: 1)
+    context.fill(CGRect(x: 0, y: 0, width: size, height: size))
+    context.translateBy(x: 150, y: 150)
+    context.rotate(by: .pi / 5)
+    context.setFillColor(red: part.x / 255, green: part.y / 255, blue: part.z / 255, alpha: 1)
+    context.fill(CGRect(x: -110, y: -22, width: 220, height: 44)) // lange, schmale Platte, ~36° gedreht
+    return context.makeImage()!
+}
+let wood = SIMD3<Double>(170, 130, 85), yellow = SIMD3<Double>(242, 205, 55)
+let box = CGRect(x: 0.12, y: 0.17, width: 0.76, height: 0.66) // Brickognize-Rahmen um die schräge Platte
+let measured = partColor(in: scene(part: yellow, table: wood), box: box)!
+assert(simd_length(measured - yellow) < 20, "gemessen \(measured), erwartet Gelb")
+assert(plate.best(for: measured)?.name == "Yellow")
 print("ok")
