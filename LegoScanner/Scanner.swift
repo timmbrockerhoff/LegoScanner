@@ -128,7 +128,9 @@ final class Scanner: NSObject {
                 let text = [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ")
                 // Rahmen nur fürs Kamerabild; Brickognize kennt nur den Ausschnitt → auf Gesamtbild umrechnen
                 resultBox = thumb == nil ? nil : scan.box?.mapped(into: scanArea)
-                let duplicate = thumb != nil && lastAddedPart.map(scan.candidates.contains) == true
+                // Nur sperren, solange das Teil noch im Warenkorb liegt (nach "Leeren" oder Löschen zählt es wieder).
+                let stillInBasket = lastAddedPart.map { part in basket?.items.contains { $0.partID == part } == true } == true
+                let duplicate = thumb != nil && stillInBasket && lastAddedPart.map(scan.candidates.contains) == true
                 if scan.item.score < Brickognize.sureScore || duplicate {
                     pending = scan
                     phase = .confirm(text, scan.item.score < Brickognize.sureScore ? .unsure : .duplicate)
