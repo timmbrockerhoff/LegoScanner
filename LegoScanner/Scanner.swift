@@ -211,16 +211,16 @@ final class FrameAnalyzer {
     enum Decision { case moving, settling, idle, scan }
 
     // Kalibrierung (am echten iPhone nachjustieren):
-    static let frameStride = 3       // nur jedes 3. Kamerabild analysieren (≈ 10 pro Sekunde)
+    static let frameStride = 2       // jedes 2. Kamerabild analysieren (≈ 15 pro Sekunde)
     static let cellDelta = 20        // ab dieser Helligkeitsänderung (0–255) zählt eine Rasterzelle als verändert
     static let motionShare = 0.02    // > 2 % veränderte Zellen zur letzten Analyse = Bewegung
     static let newSceneShare = 0.05  // > 5 % Unterschied zum zuletzt gescannten Bild = neues Teil
                                      // (gemessen: ruhiges Bild schwankt bis 0,023, Teilewechsel ≈ 0,3)
-    static let stillNeeded = 6       // so viele ruhige Analysen in Folge (≈ 0,6 s), dann wird gescannt
+    static let stillNeeded = 5       // so viele ruhige Analysen in Folge (≈ 0,33 s), dann wird gescannt
 
     // Tracking des erkannten Teils (Vision). Kalibrierung:
     static let trackConfidence: Float = 0.3 // darunter gilt ein Frame als "Teil nicht sicher gefunden"
-    static let lostAfter = 3                // so viele unsichere Frames in Folge (≈ 0,3 s) = Teil weg
+    static let lostAfter = 4                // so viele unsichere Frames in Folge (≈ 0,27 s) = Teil weg
 
     enum Tracking { case off, holding(CGRect), lost }
 

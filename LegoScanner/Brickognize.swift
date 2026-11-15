@@ -53,9 +53,12 @@ enum Brickognize {
     /// `empty` = Brickognize hat gar nichts gefunden, z. B. leerer Tisch.
     @MainActor
     static func identify(_ image: UIImage) async throws -> (result: ScanResult?, empty: Bool) {
-        let upright = image.uprightResized(maxSide: 1024)
+        // 512 px: gemessen gleich treffsicher wie 1024 px, aber halb so lange Übertragung.
+        let upright = image.uprightResized(maxSide: 512)
+        let started = Date.now
         let response = try await recognize(upright)
         #if DEBUG
+        print(String(format: "SCAN Antwortzeit %.2f s", Date.now.timeIntervalSince(started)))
         print("SCAN Ergebnis:", response.items.prefix(3).map { "\($0.id) \($0.name) \(Int($0.score * 100))%" })
         #endif
         guard let top = response.items.first, top.score >= minScore else { return (nil, response.items.isEmpty) }
