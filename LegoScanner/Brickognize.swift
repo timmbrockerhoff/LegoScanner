@@ -20,21 +20,44 @@ struct BrickognizeResponse: Decodable {
         let img_url: URL?
         let category: String?
         let score: Double
-        let external_sites: [Site]
-
-        struct Site: Decodable { let name: String; let url: URL }
-
-        func bricklinkURL(colorID: Int? = nil) -> URL {
-            if let colorID {
-                return URL(string: "https://www.bricklink.com/v2/catalog/catalogitem.page?P=\(id)&idColor=\(colorID)")!
-            }
-            return external_sites.first { $0.name == "bricklink" }?.url
-                ?? URL(string: "https://www.bricklink.com/v2/catalog/catalogitem.page?P=\(id)")!
-        }
     }
 }
 
+enum BrickLink {
+    /// Katalogseite des Teils, mit Farbe vorgewählt, wenn die BrickLink-Farb-ID bekannt ist.
+    static func url(part: String, colorID: Int?) -> URL {
+        let color = colorID.map { "&idColor=\($0)" } ?? ""
+        return URL(string: "https://www.bricklink.com/v2/catalog/catalogitem.page?P=\(part)\(color)")!
+    }
+}
+
+/// Ein erkanntes Teil: bester Treffer, geschätzte Farbe und Rahmen im Bild (normiert, Ursprung oben links).
+struct ScanResult {
+    let item: BrickognizeResponse.Item
+    let color: LegoColor?
+    let box: CGRect?
+}
+
 enum Brickognize {
+    /// Darunter gilt ein Treffer als "nichts erkannt" (z. B. leerer Tisch).
+    // Kalibrierung: echte Teile lagen im Test bei 0,79–0,9. Zu hoch → gute Teile fallen raus.
+    static let minScore = 0.5
+
+    /// Foto → bester Treffer mit Farbe, oder nil wenn kein Teil sicher erkannt wurde.
+    @MainActor
+    static func identify(_ image: UIImage) async throws -> ScanResult? {
+        let upright = image.uprightResized(maxSide: 1024)
+        let response = try await recognize(upright)
+        #if DEBUG
+        print("SCAN Ergebnis:", response.items.prefix(3).map { "\($0.id) \($0.name) \(Int($0.score * 100))%" })
+        #endif
+        guard let top = response.items.first, top.score >= minScore else { return nil }
+        let box = response.bounding_box?.normalized
+        let colors = Rebrickable.colors(forPart: top.id)
+        let measured = box.flatMap { upright.medianColor(in: $0) }
+        return ScanResult(item: top, color: measured.flatMap { colors.best(for: $0) } ?? colors.first, box: box)
+    }
+
     /// `image` sollte schon `uprightResized` sein, damit der Rahmen zu den Pixeln passt.
     static func recognize(_ image: UIImage) async throws -> BrickognizeResponse {
         guard let jpeg = image.jpegData(compressionQuality: 0.8) else { throw URLError(.cannotDecodeContentData) }
