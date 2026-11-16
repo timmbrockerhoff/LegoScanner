@@ -1,6 +1,7 @@
 name: LegoScanner
 options:
   bundleIdPrefix: de.brockerhoff
+  developmentLanguage: de
   deploymentTarget:
     iOS: "26.0"
 targets:
@@ -8,11 +9,18 @@ targets:
     type: application
     platform: iOS
     sources: [LegoScanner]
+    configFiles:
+      Debug: Secrets.xcconfig
+      Release: Secrets.xcconfig
     info:
       path: LegoScanner/Info.plist
       properties:
         CFBundleDisplayName: LegoScanner
+        CFBundleDevelopmentRegion: de
         NSCameraUsageDescription: "Zum Fotografieren von LEGO-Teilen."
+        BackendURL: "https://legoscanner-backend.vercel.app/api/identify"
+        # aus Secrets.xcconfig (nicht im Repo): APP_KEY = <derselbe Wert wie die Vercel-Variable APP_KEY>
+        AppKey: "$(APP_KEY)"
         UILaunchScreen: {}
     settings:
       base:

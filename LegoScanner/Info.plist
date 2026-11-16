@@ -2,8 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AppKey</key>
+	<string>$(APP_KEY)</string>
+	<key>BackendURL</key>
+	<string>https://legoscanner-backend.vercel.app/api/identify</string>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<string>de</string>
 	<key>CFBundleDisplayName</key>
 	<string>LegoScanner</string>
 	<key>CFBundleExecutable</key>

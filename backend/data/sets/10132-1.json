@@ -1,0 +1,5196 @@
+{
+ "no": "10132-1",
+ "name": "Motorisierter Hogwarts Express",
+ "year": 2004,
+ "image": "https://img.bricklink.com/ItemImage/SN/0/10132-1.png",
+ "parts": [
+  {
+   "part": "30374",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Bar 4L Lightsaber Blade",
+   "qty": 1
+  },
+  {
+   "part": "3062",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 1 x 1 Round with Hollow Stud",
+   "qty": 11
+  },
+  {
+   "part": "3004",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 1 x 2",
+   "qty": 4
+  },
+  {
+   "part": "2877",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 1 x 2 with Grille",
+   "qty": 6
+  },
+  {
+   "part": "3622",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 1 x 3",
+   "qty": 2
+  },
+  {
+   "part": "3009",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 1 x 6",
+   "qty": 2
+  },
+  {
+   "part": "3941",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Brick 2 x 2 Round without Reinforcement",
+   "qty": 1
+  },
+  {
+   "part": "3960pb077",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Dish 4 x 4 Inverted (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "2871",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Electric Train Motor 9V Decorative Side",
+   "qty": 2
+  },
+  {
+   "part": "4592c02",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Hinge Control Stick Base (Variante/bedruckt)",
+   "qty": 3
+  },
+  {
+   "part": "44822",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Hinge Tile 1 x 4 Locking with 2 Single Fingers on Top",
+   "qty": 1
+  },
+  {
+   "part": "73092",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Magnet Cylindrical in Casing Black (Obsolete)",
+   "qty": 6
+  },
+  {
+   "part": "6231",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Panel 1 x 1 x 1 Corner with Rounded Corners",
+   "qty": 2
+  },
+  {
+   "part": "4865",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Panel 1 x 2 x 1 with Square Corners",
+   "qty": 2
+  },
+  {
+   "part": "30413",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Panel 1 x 4 x 1 with Rounded Corners, Thick Wall",
+   "qty": 1
+  },
+  {
+   "part": "3024",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 1",
+   "qty": 2
+  },
+  {
+   "part": "4073",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 1 Round",
+   "qty": 31
+  },
+  {
+   "part": "6019",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 1 with Clip Horizontal (Thick U-Clip)",
+   "qty": 4
+  },
+  {
+   "part": "4477",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 10",
+   "qty": 2
+  },
+  {
+   "part": "3023",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 2",
+   "qty": 6
+  },
+  {
+   "part": "4175",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 2 with Ladder",
+   "qty": 2
+  },
+  {
+   "part": "3623",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 3",
+   "qty": 2
+  },
+  {
+   "part": "3710",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 4",
+   "qty": 5
+  },
+  {
+   "part": "3666",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 6",
+   "qty": 7
+  },
+  {
+   "part": "3460",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 1 x 8",
+   "qty": 4
+  },
+  {
+   "part": "3022",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 2 x 2",
+   "qty": 2
+  },
+  {
+   "part": "2420",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 2 x 2 Corner",
+   "qty": 6
+  },
+  {
+   "part": "4032",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 2 x 2 Round with Axlehole",
+   "qty": 1
+  },
+  {
+   "part": "3020",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 2 x 4",
+   "qty": 2
+  },
+  {
+   "part": "3795",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 2 x 6",
+   "qty": 2
+  },
+  {
+   "part": "3031",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 4 x 4",
+   "qty": 1
+  },
+  {
+   "part": "3958",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 6 x 6",
+   "qty": 2
+  },
+  {
+   "part": "30504",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Plate 8 x 8 without Corner",
+   "qty": 2
+  },
+  {
+   "part": "3048c",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 1 x 2 Triple (Variante/bedruckt)",
+   "qty": 4
+  },
+  {
+   "part": "3040",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 2 x 1",
+   "qty": 2
+  },
+  {
+   "part": "3665",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 2 x 1 Inverted without Inner Stopper Ring",
+   "qty": 2
+  },
+  {
+   "part": "3039",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 2 x 2",
+   "qty": 2
+  },
+  {
+   "part": "3660",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 2 x 2 Inverted without Inner Stopper Ring (Obsolete)",
+   "qty": 2
+  },
+  {
+   "part": "3037",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 2 x 4",
+   "qty": 2
+  },
+  {
+   "part": "32083",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Slope Brick 45 6 x 4 Double",
+   "qty": 7
+  },
+  {
+   "part": "6541",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Technic Brick 1 x 1 with Hole",
+   "qty": 1
+  },
+  {
+   "part": "3700",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Technic Brick 1 x 2 with Hole",
+   "qty": 4
+  },
+  {
+   "part": "75c16",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Technic Flex-System Hose 6L (120LDU) (Variante/bedruckt)",
+   "qty": 2
+  },
+  {
+   "part": "3069",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Tile 1 x 2 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "2431",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Tile 1 x 4 with Groove",
+   "qty": 5
+  },
+  {
+   "part": "6636",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Tile 1 x 6",
+   "qty": 1
+  },
+  {
+   "part": "4162",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Tile 1 x 8",
+   "qty": 4
+  },
+  {
+   "part": "4150",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Tile 2 x 2 Round with Cross Underside Stud",
+   "qty": 1
+  },
+  {
+   "part": "6584a",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Base 6 x 24 (Variante/bedruckt)",
+   "qty": 2
+  },
+  {
+   "part": "4025",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Bogie Plate 6 x 4 with 5mm Pin",
+   "qty": 3
+  },
+  {
+   "part": "4022",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Buffer Beam",
+   "qty": 6
+  },
+  {
+   "part": "2920",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Coupling Type 2",
+   "qty": 6
+  },
+  {
+   "part": "590",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Motor 9V",
+   "qty": 1
+  },
+  {
+   "part": "2868b",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Speed Regulator 9V",
+   "qty": 1
+  },
+  {
+   "part": "2878c01",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Train Wheel Bogie Single Axle with Wheelset with Open Centre Wheels",
+   "qty": 9
+  },
+  {
+   "part": "2496",
+   "color": "Black",
+   "colorId": 11,
+   "name": "Wheel Trolley",
+   "qty": 1
+  },
+  {
+   "part": "3021",
+   "color": "Blue",
+   "colorId": 7,
+   "name": "Plate 2 x 3",
+   "qty": 4
+  },
+  {
+   "part": "70501",
+   "color": "Chrome Gold",
+   "colorId": 21,
+   "name": "Minifig Coins on Sprue - Sans-serif Type",
+   "qty": 1
+  },
+  {
+   "part": "3659",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Arch 1 x 4",
+   "qty": 1
+  },
+  {
+   "part": "4070",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 1 x 1 with Headlight",
+   "qty": 8
+  },
+  {
+   "part": "2453a",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 1 x 1 x 5 with Hollow Stud",
+   "qty": 3
+  },
+  {
+   "part": "2454",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 1 x 2 x 5 (Obsolete)",
+   "qty": 1
+  },
+  {
+   "part": "3010",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 1 x 4",
+   "qty": 9
+  },
+  {
+   "part": "3008",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 1 x 8",
+   "qty": 4
+  },
+  {
+   "part": "3003",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 2 x 2",
+   "qty": 4
+  },
+  {
+   "part": "2357",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 2 x 2 Corner",
+   "qty": 21
+  },
+  {
+   "part": "3001",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 2 x 4",
+   "qty": 2
+  },
+  {
+   "part": "2456",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Brick 2 x 6",
+   "qty": 1
+  },
+  {
+   "part": "5306c01",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Electric Brick 2 x 2 x 0.667 with Wire End (Obsolete) (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3837",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Minifig Shovel",
+   "qty": 1
+  },
+  {
+   "part": "3024",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 1 x 1",
+   "qty": 5
+  },
+  {
+   "part": "3023",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 1 x 2",
+   "qty": 2
+  },
+  {
+   "part": "3710",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 1 x 4",
+   "qty": 3
+  },
+  {
+   "part": "3666",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 1 x 6",
+   "qty": 1
+  },
+  {
+   "part": "2420",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 2 x 2 Corner",
+   "qty": 5
+  },
+  {
+   "part": "3020",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 2 x 4",
+   "qty": 3
+  },
+  {
+   "part": "3795",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Plate 2 x 6",
+   "qty": 4
+  },
+  {
+   "part": "30363",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Slope Brick 18 4 x 2",
+   "qty": 1
+  },
+  {
+   "part": "3040",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Slope Brick 45 2 x 1",
+   "qty": 7
+  },
+  {
+   "part": "3660",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Slope Brick 45 2 x 2 Inverted without Inner Stopper Ring (Obsolete)",
+   "qty": 7
+  },
+  {
+   "part": "3678b",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Slope Brick 65 2 x 2 x 2 with Centre Tube",
+   "qty": 1
+  },
+  {
+   "part": "4460a",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Slope Brick 75 2 x 1 x 3 with Open Stud",
+   "qty": 1
+  },
+  {
+   "part": "2039",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Support 2 x 2 x 7 Lamppost with 6 Base Flutes",
+   "qty": 2
+  },
+  {
+   "part": "6587",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Technic Axle 3 with Stud",
+   "qty": 1
+  },
+  {
+   "part": "2412b",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Tile 1 x 2 Grille with Groove",
+   "qty": 11
+  },
+  {
+   "part": "3069",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Tile 1 x 2 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "3069pb0005",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Tile 1 x 2 with Groove (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3068",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Tile 2 x 2 with Groove",
+   "qty": 2
+  },
+  {
+   "part": "2867c01",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Train Track 9V Curved (Variante/bedruckt)",
+   "qty": 16
+  },
+  {
+   "part": "2865c01",
+   "color": "Dark Bluish Gray",
+   "colorId": 85,
+   "name": "Train Track 9V Straight (Variante/bedruckt)",
+   "qty": 2
+  },
+  {
+   "part": "30374",
+   "color": "Dark Nougat",
+   "colorId": 225,
+   "name": "Bar 4L Lightsaber Blade",
+   "qty": 1
+  },
+  {
+   "part": "3455",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Arch 1 x 6",
+   "qty": 2
+  },
+  {
+   "part": "3062",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Brick 1 x 1 Round with Hollow Stud",
+   "qty": 10
+  },
+  {
+   "part": "2454",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Brick 1 x 2 x 5 (Obsolete)",
+   "qty": 2
+  },
+  {
+   "part": "4740",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Dish 2 x 2 Inverted",
+   "qty": 1
+  },
+  {
+   "part": "4073",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Plate 1 x 1 Round",
+   "qty": 9
+  },
+  {
+   "part": "3070",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Tile 1 x 1 without Groove",
+   "qty": 2
+  },
+  {
+   "part": "3069",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Tile 1 x 2 with Groove",
+   "qty": 8
+  },
+  {
+   "part": "2431",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Tile 1 x 4 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "3068",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Tile 2 x 2 with Groove",
+   "qty": 2
+  },
+  {
+   "part": "3853",
+   "color": "Dark Red",
+   "colorId": 59,
+   "name": "Window 1 x 4 x 3",
+   "qty": 5
+  },
+  {
+   "part": "x223",
+   "color": "Green",
+   "colorId": 6,
+   "name": "Frog",
+   "qty": 1
+  },
+  {
+   "part": "40234",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Animal Rat",
+   "qty": 1
+  },
+  {
+   "part": "3659",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Arch 1 x 4",
+   "qty": 1
+  },
+  {
+   "part": "30374",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Bar 4L Lightsaber Blade",
+   "qty": 1
+  },
+  {
+   "part": "3005",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Brick 1 x 1",
+   "qty": 23
+  },
+  {
+   "part": "3004",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Brick 1 x 2",
+   "qty": 26
+  },
+  {
+   "part": "3010",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Brick 1 x 4",
+   "qty": 2
+  },
+  {
+   "part": "2653",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Brick 1 x 4 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "4345",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Container Box 2 x 2 x 2 with Hollow Studs",
+   "qty": 1
+  },
+  {
+   "part": "3938",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Hinge 1 x 2 Top",
+   "qty": 1
+  },
+  {
+   "part": "44570",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Hinge Plate 3 x 4 Locking Dual 2 Finger, 9 Teeth",
+   "qty": 1
+  },
+  {
+   "part": "4073",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 1 x 1 Round",
+   "qty": 6
+  },
+  {
+   "part": "4081b",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 1 x 1 with Clip Light Type 2",
+   "qty": 1
+  },
+  {
+   "part": "3623",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 1 x 3",
+   "qty": 2
+  },
+  {
+   "part": "3666",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 1 x 6",
+   "qty": 1
+  },
+  {
+   "part": "4032",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 2 x 2 Round with Axlehole",
+   "qty": 1
+  },
+  {
+   "part": "2817",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 2 x 2 with Holes",
+   "qty": 1
+  },
+  {
+   "part": "3029",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 4 x 12",
+   "qty": 2
+  },
+  {
+   "part": "41539",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Plate 8 x 8",
+   "qty": 2
+  },
+  {
+   "part": "6541",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Technic Brick 1 x 1 with Hole",
+   "qty": 2
+  },
+  {
+   "part": "32064",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Technic Brick 1 x 2 with Axlehole with Open Sides and Stud Blocker",
+   "qty": 1
+  },
+  {
+   "part": "3673",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Technic Pin",
+   "qty": 4
+  },
+  {
+   "part": "3069",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Tile 1 x 2 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "3069pb0006",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Tile 1 x 2 with Groove (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3068",
+   "color": "Light Bluish Gray",
+   "colorId": 86,
+   "name": "Tile 2 x 2 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "4449",
+   "color": "Medium Blue",
+   "colorId": 42,
+   "name": "Minifig Suitcase (Closed)",
+   "qty": 1
+  },
+  {
+   "part": "30238",
+   "color": "Orange",
+   "colorId": 4,
+   "name": "Animal Spider",
+   "qty": 1
+  },
+  {
+   "part": "3455",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Arch 1 x 6",
+   "qty": 2
+  },
+  {
+   "part": "3005",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 1",
+   "qty": 10
+  },
+  {
+   "part": "2921",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 1 with Handle",
+   "qty": 2
+  },
+  {
+   "part": "6111",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 10",
+   "qty": 2
+  },
+  {
+   "part": "3004",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 2",
+   "qty": 21
+  },
+  {
+   "part": "3010",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 4",
+   "qty": 6
+  },
+  {
+   "part": "3009",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 6",
+   "qty": 14
+  },
+  {
+   "part": "3008",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 1 x 8",
+   "qty": 6
+  },
+  {
+   "part": "3003",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 2",
+   "qty": 1
+  },
+  {
+   "part": "2357",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 2 Corner",
+   "qty": 2
+  },
+  {
+   "part": "3941",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 2 Round without Reinforcement",
+   "qty": 1
+  },
+  {
+   "part": "3001",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 4",
+   "qty": 3
+  },
+  {
+   "part": "6081",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 4 x 1.333 with Curved Top",
+   "qty": 2
+  },
+  {
+   "part": "2456",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Brick 2 x 6",
+   "qty": 1
+  },
+  {
+   "part": "4589",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Cone 1 x 1",
+   "qty": 2
+  },
+  {
+   "part": "2495",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Minifig Hand Truck",
+   "qty": 1
+  },
+  {
+   "part": "30413",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Panel 1 x 4 x 1 with Rounded Corners, Thick Wall",
+   "qty": 3
+  },
+  {
+   "part": "4477",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 10",
+   "qty": 2
+  },
+  {
+   "part": "4623u",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 2 with Vertical Bar on Long Side and Long Arm (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3794a",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 2 without Groove with 1 Centre Stud",
+   "qty": 4
+  },
+  {
+   "part": "3623",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 3",
+   "qty": 2
+  },
+  {
+   "part": "3710",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 4",
+   "qty": 1
+  },
+  {
+   "part": "3666",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 1 x 6",
+   "qty": 1
+  },
+  {
+   "part": "3832",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 2 x 10",
+   "qty": 1
+  },
+  {
+   "part": "3022",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Plate 2 x 2",
+   "qty": 1
+  },
+  {
+   "part": "4286",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Slope Brick 33 3 x 1",
+   "qty": 4
+  },
+  {
+   "part": "3040",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Slope Brick 45 2 x 1",
+   "qty": 2
+  },
+  {
+   "part": "3037",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Slope Brick 45 2 x 4",
+   "qty": 4
+  },
+  {
+   "part": "4854",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Slope Brick 45 4 x 4 Double Inverted with Open Centre",
+   "qty": 2
+  },
+  {
+   "part": "2431",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Tile 1 x 4 with Groove",
+   "qty": 2
+  },
+  {
+   "part": "6636",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Tile 1 x 6",
+   "qty": 2
+  },
+  {
+   "part": "4162",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Tile 1 x 8",
+   "qty": 4
+  },
+  {
+   "part": "4033",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Train Window 1 x 4 x 3",
+   "qty": 10
+  },
+  {
+   "part": "2377",
+   "color": "Red",
+   "colorId": 5,
+   "name": "Window 1 x 2 x 2 Plane",
+   "qty": 2
+  },
+  {
+   "part": "40232",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Animal Owl",
+   "qty": 1
+  },
+  {
+   "part": "3001",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Brick 2 x 4",
+   "qty": 3
+  },
+  {
+   "part": "4738a",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Container Treasure Chest with Slots",
+   "qty": 1
+  },
+  {
+   "part": "4739a",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Container Treasure Chest with Slots Lid",
+   "qty": 1
+  },
+  {
+   "part": "4449",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Minifig Suitcase (Closed)",
+   "qty": 1
+  },
+  {
+   "part": "3022",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Plate 2 x 2",
+   "qty": 1
+  },
+  {
+   "part": "3021",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Plate 2 x 3",
+   "qty": 5
+  },
+  {
+   "part": "3020",
+   "color": "Reddish Brown",
+   "colorId": 88,
+   "name": "Plate 2 x 4",
+   "qty": 5
+  },
+  {
+   "part": "3040",
+   "color": "Sand Green",
+   "colorId": 48,
+   "name": "Slope Brick 45 2 x 1",
+   "qty": 4
+  },
+  {
+   "part": "3039",
+   "color": "Sand Green",
+   "colorId": 48,
+   "name": "Slope Brick 45 2 x 2",
+   "qty": 11
+  },
+  {
+   "part": "3045",
+   "color": "Sand Green",
+   "colorId": 48,
+   "name": "Slope Brick 45 2 x 2 Double Convex",
+   "qty": 4
+  },
+  {
+   "part": "2431",
+   "color": "Sand Green",
+   "colorId": 48,
+   "name": "Tile 1 x 4 with Groove",
+   "qty": 1
+  },
+  {
+   "part": "30374",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Bar 4L Lightsaber Blade",
+   "qty": 1
+  },
+  {
+   "part": "33009pb002",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Minifig Book (Closed) (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3023",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Plate 1 x 2",
+   "qty": 5
+  },
+  {
+   "part": "3460",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Plate 1 x 8",
+   "qty": 4
+  },
+  {
+   "part": "3039pb026",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Slope Brick 45 2 x 2 (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3069pb0002",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Tile 1 x 2 with Groove (Variante/bedruckt)",
+   "qty": 3
+  },
+  {
+   "part": "3069pb0038",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Tile 1 x 2 with Groove (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "2431pb0022",
+   "color": "Tan",
+   "colorId": 2,
+   "name": "Tile 1 x 4 with Groove (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "4034",
+   "color": "Trans-Clear",
+   "colorId": 12,
+   "name": "Glass for Train Window 1 x 4 x 3",
+   "qty": 10
+  },
+  {
+   "part": "4073",
+   "color": "Trans-Clear",
+   "colorId": 12,
+   "name": "Plate 1 x 1 Round",
+   "qty": 2
+  },
+  {
+   "part": "6126",
+   "color": "Trans-Neon Orange",
+   "colorId": 18,
+   "name": "Minifig Flame with Pegs",
+   "qty": 2
+  },
+  {
+   "part": "4073",
+   "color": "Trans-Neon Orange",
+   "colorId": 18,
+   "name": "Plate 1 x 1 Round",
+   "qty": 2
+  },
+  {
+   "part": "30152c03",
+   "color": "Trans-Purple",
+   "colorId": 51,
+   "name": "Minifig Tool Magnifying Glass (Obsolete) (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3062",
+   "color": "Trans-Yellow",
+   "colorId": 19,
+   "name": "Brick 1 x 1 Round with Hollow Stud",
+   "qty": 1
+  },
+  {
+   "part": "40232",
+   "color": "White",
+   "colorId": 1,
+   "name": "Animal Owl",
+   "qty": 1
+  },
+  {
+   "part": "4070",
+   "color": "White",
+   "colorId": 1,
+   "name": "Brick 1 x 1 with Headlight",
+   "qty": 1
+  },
+  {
+   "part": "4346pb02",
+   "color": "White",
+   "colorId": 1,
+   "name": "Container Box 2 x 2 x 2 Door with Slot (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3937",
+   "color": "White",
+   "colorId": 1,
+   "name": "Hinge 1 x 2 Base",
+   "qty": 1
+  },
+  {
+   "part": "4449",
+   "color": "White",
+   "colorId": 1,
+   "name": "Minifig Suitcase (Closed)",
+   "qty": 1
+  },
+  {
+   "part": "6231",
+   "color": "White",
+   "colorId": 1,
+   "name": "Panel 1 x 1 x 1 Corner with Rounded Corners",
+   "qty": 2
+  },
+  {
+   "part": "4865",
+   "color": "White",
+   "colorId": 1,
+   "name": "Panel 1 x 2 x 1 with Square Corners",
+   "qty": 2
+  },
+  {
+   "part": "3069px41",
+   "color": "White",
+   "colorId": 1,
+   "name": "Tile 1 x 2 with Groove (Variante/bedruckt)",
+   "qty": 1
+  },
+  {
+   "part": "3854",
+   "color": "White",
+   "colorId": 1,
+   "name": "Window 1 x 2 x 3 Pane",
+   "qty": 10
+  },
+  {
+   "part": "3899",
+   "color": "Yellow",
+   "colorId": 3,
+   "name": "Minifig Cup",
+   "qty": 1
+  },
+  {
+   "part": "32028",
+   "color": "Yellow",
+   "colorId": 3,
+   "name": "Plate 1 x 2 with Door Rail",
+   "qty": 1
+  },
+  {
+   "part": "4032",
+   "color": "Yellow",
+   "colorId": 3,
+   "name": "Plate 2 x 2 Round with Axlehole",
+   "qty": 1
+  },
+  {
+   "part": "3070p01",
+   "color": "Yellow",
+   "colorId": 3,
+   "name": "Tile 1 x 1 without Groove (Variante/bedruckt)",
+   "qty": 2
+  },
+  {
+   "part": "3070p02",
+   "color": "Yellow",
+   "colorId": 3,
+   "name": "Tile 1 x 1 without Groove (Variante/bedruckt)",
+   "qty": 2
+  }
+ ],
+ "sections": [
+  {
+   "name": "Abschnitt 1",
+   "bag": "Lok · Tüte 1",
+   "pages": "3–13",
+   "steps": [
+    {
+     "page": 3,
+     "step": 1,
+     "parts": [
+      {
+       "part": "6584a",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3010",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3068",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "3023",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "3022",
+       "color": "Reddish Brown",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 3,
+     "step": 2,
+     "parts": [
+      {
+       "part": "4286",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3020",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4070",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "4592c02",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3037",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3020",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 4,
+     "step": 3,
+     "parts": [
+      {
+       "part": "3068",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "30413",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3794a",
+       "color": "Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 4,
+     "step": 4,
+     "parts": [
+      {
+       "part": "4477",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3666",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "6111",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 4,
+     "step": 5,
+     "parts": [
+      {
+       "part": "4162",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3023",
+       "color": "Tan",
+       "qty": 2
+      },
+      {
+       "part": "4589",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "30413",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 5,
+     "step": 6,
+     "parts": [
+      {
+       "part": "3039",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3660",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3660",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 5,
+     "step": 7,
+     "parts": [
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "4073",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3010",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 5,
+     "step": 8,
+     "parts": [
+      {
+       "part": "3040",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3040",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 3
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 6,
+     "step": 9,
+     "parts": [
+      {
+       "part": "4070",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "4073",
+       "color": "Trans-Clear",
+       "qty": 2
+      },
+      {
+       "part": "4073",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 6,
+     "step": 10,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3021",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "6231",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "4865",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3938",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "6541",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3673",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3003",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 7,
+     "step": 11,
+     "parts": [
+      {
+       "part": "6587",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "32064",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3022",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "30374",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2420",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 7,
+     "step": 12,
+     "parts": [
+      {
+       "part": "3005",
+       "color": "Red",
+       "qty": 4
+      },
+      {
+       "part": "2377",
+       "color": "Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 8,
+     "step": 13,
+     "parts": [
+      {
+       "part": "4477",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3710",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "6019",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "4162",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 8,
+     "step": 14,
+     "parts": [
+      {
+       "part": "3710",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "6019",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3023",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "3710",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 9,
+     "step": 15,
+     "parts": [
+      {
+       "part": "6081",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3037",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 9,
+     "step": 16,
+     "parts": [
+      {
+       "part": "75c16",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3794a",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 10,
+     "step": 17,
+     "parts": [
+      {
+       "part": "4073",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3941",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2877",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 10,
+     "step": 18,
+     "parts": [
+      {
+       "part": "4032",
+       "color": "Yellow",
+       "qty": 1
+      },
+      {
+       "part": "4032",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "32083",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 11,
+     "step": 19,
+     "parts": [
+      {
+       "part": "3795",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3010",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3037",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3941",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3960pb077",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4592c02",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3001",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 12,
+     "step": 20,
+     "parts": [
+      {
+       "part": "2878c01",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3020",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3021",
+       "color": "Blue",
+       "qty": 1
+      },
+      {
+       "part": "3022",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2920",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "73092",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4025",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4022",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 13,
+     "step": 21,
+     "parts": [
+      {
+       "part": "590",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4022",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2871",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "2920",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "73092",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    }
+   ],
+   "parts": [
+    {
+     "part": "6584a",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3010",
+     "color": "Red",
+     "qty": 5
+    },
+    {
+     "part": "3068",
+     "color": "Dark Red",
+     "qty": 1
+    },
+    {
+     "part": "3023",
+     "color": "Tan",
+     "qty": 4
+    },
+    {
+     "part": "3022",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "4286",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3020",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4070",
+     "color": "Dark Bluish Gray",
+     "qty": 4
+    },
+    {
+     "part": "4592c02",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "3037",
+     "color": "Red",
+     "qty": 4
+    },
+    {
+     "part": "3020",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3068",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "30413",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3794a",
+     "color": "Red",
+     "qty": 4
+    },
+    {
+     "part": "4477",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3666",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "6111",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3009",
+     "color": "Red",
+     "qty": 3
+    },
+    {
+     "part": "3004",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "4162",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "4589",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3039",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3660",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3004",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "3660",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3062",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "4073",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "3005",
+     "color": "Red",
+     "qty": 6
+    },
+    {
+     "part": "3004",
+     "color": "Red",
+     "qty": 6
+    },
+    {
+     "part": "3040",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3040",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "4073",
+     "color": "Trans-Clear",
+     "qty": 2
+    },
+    {
+     "part": "4073",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3021",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "6231",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "4865",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3938",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "6541",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3673",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3003",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "6587",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "32064",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3022",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "30374",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2420",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "2377",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "4477",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3710",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "6019",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "3710",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "6081",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3037",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "75c16",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3941",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2877",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4032",
+     "color": "Yellow",
+     "qty": 1
+    },
+    {
+     "part": "4032",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "32083",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3795",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3941",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3960pb077",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3001",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "2878c01",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3021",
+     "color": "Blue",
+     "qty": 1
+    },
+    {
+     "part": "2920",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "73092",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "4025",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4022",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "590",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2871",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3622",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3009",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "30413",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3024",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3665",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3069",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2921",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "4623u",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3040",
+     "color": "Red",
+     "qty": 2
+    }
+   ]
+  },
+  {
+   "name": "Abschnitt 2",
+   "bag": "Tender · Tüte 2",
+   "pages": "14–18",
+   "steps": [
+    {
+     "page": 14,
+     "step": 1,
+     "parts": [
+      {
+       "part": "3832",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3021",
+       "color": "Blue",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 14,
+     "step": 2,
+     "parts": [
+      {
+       "part": "2878c01",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3023",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "4022",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 14,
+     "step": 3,
+     "parts": [
+      {
+       "part": "2878c01",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3023",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4022",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 14,
+     "step": 4,
+     "parts": [
+      {
+       "part": "2920",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "73092",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 14,
+     "step": 5,
+     "parts": [
+      {
+       "part": "3958",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3666",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 15,
+     "step": 6,
+     "parts": [
+      {
+       "part": "3623",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "4175",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3666",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 15,
+     "step": 7,
+     "parts": [
+      {
+       "part": "3001",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "2456",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 15,
+     "step": 8,
+     "parts": [
+      {
+       "part": "3008",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 5
+      },
+      {
+       "part": "3010",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 15,
+     "step": 9,
+     "parts": [
+      {
+       "part": "3710",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 4
+      },
+      {
+       "part": "2420",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 16,
+     "step": 10,
+     "parts": [
+      {
+       "part": "3795",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2431",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3666",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "6636",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 16,
+     "step": 11,
+     "parts": [
+      {
+       "part": "3008",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 16,
+     "step": 12,
+     "parts": [
+      {
+       "part": "3710",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "30413",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3710",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "44570",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3031",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3020",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "4032",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "44822",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3623",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3020",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4150",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 17,
+     "step": 13,
+     "parts": [
+      {
+       "part": "3710",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 17,
+     "step": 14,
+     "parts": [
+      {
+       "part": "30238",
+       "color": "Orange",
+       "qty": 1
+      },
+      {
+       "part": "33009pb002",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "4449",
+       "color": "Medium Blue",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 17,
+     "step": 15,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "4286",
+       "color": "Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 17,
+     "step": 16,
+     "parts": [
+      {
+       "part": "4073",
+       "color": "Black",
+       "qty": 12
+      },
+      {
+       "part": "4073",
+       "color": "Light Bluish Gray",
+       "qty": 3
+      },
+      {
+       "part": "3837",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    }
+   ],
+   "parts": [
+    {
+     "part": "3832",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3021",
+     "color": "Blue",
+     "qty": 1
+    },
+    {
+     "part": "2878c01",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "3023",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "4022",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3023",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "2920",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "73092",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3958",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3666",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3623",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "4175",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3666",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3001",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "2456",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "2357",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3008",
+     "color": "Red",
+     "qty": 3
+    },
+    {
+     "part": "3009",
+     "color": "Red",
+     "qty": 10
+    },
+    {
+     "part": "3010",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3710",
+     "color": "Dark Bluish Gray",
+     "qty": 3
+    },
+    {
+     "part": "3004",
+     "color": "Red",
+     "qty": 3
+    },
+    {
+     "part": "2420",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3795",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "2431",
+     "color": "Black",
+     "qty": 5
+    },
+    {
+     "part": "6636",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3710",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "30413",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "44570",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3031",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3020",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "4032",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "44822",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3623",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3020",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4150",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "30238",
+     "color": "Orange",
+     "qty": 1
+    },
+    {
+     "part": "33009pb002",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "4449",
+     "color": "Medium Blue",
+     "qty": 1
+    },
+    {
+     "part": "4286",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "4073",
+     "color": "Black",
+     "qty": 20
+    },
+    {
+     "part": "4073",
+     "color": "Light Bluish Gray",
+     "qty": 4
+    },
+    {
+     "part": "3837",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "name": "Abschnitt 3",
+   "bag": "Passagierwaggon · Tüte 3",
+   "pages": "19–27",
+   "steps": [
+    {
+     "page": 19,
+     "step": 1,
+     "parts": [
+      {
+       "part": "6584a",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 19,
+     "step": 2,
+     "parts": [
+      {
+       "part": "3795",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3460",
+       "color": "Tan",
+       "qty": 4
+      },
+      {
+       "part": "3001",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 19,
+     "step": 3,
+     "parts": [
+      {
+       "part": "3001",
+       "color": "Reddish Brown",
+       "qty": 3
+      },
+      {
+       "part": "3020",
+       "color": "Reddish Brown",
+       "qty": 4
+      }
+     ]
+    },
+    {
+     "page": 20,
+     "step": 4,
+     "parts": [
+      {
+       "part": "3008",
+       "color": "Red",
+       "qty": 3
+      },
+      {
+       "part": "3009",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 20,
+     "step": 5,
+     "parts": [
+      {
+       "part": "3666",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "4162",
+       "color": "Red",
+       "qty": 4
+      },
+      {
+       "part": "6636",
+       "color": "Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 20,
+     "step": 6,
+     "parts": [
+      {
+       "part": "3048c",
+       "color": "Black",
+       "qty": 4
+      },
+      {
+       "part": "3068",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3069pb0002",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "4073",
+       "color": "Black",
+       "qty": 4
+      },
+      {
+       "part": "3069pb0038",
+       "color": "Tan",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 21,
+     "step": 7,
+     "parts": [
+      {
+       "part": "2878c01",
+       "color": "Black",
+       "qty": 4
+      },
+      {
+       "part": "4022",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3021",
+       "color": "Blue",
+       "qty": 2
+      },
+      {
+       "part": "4025",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "2920",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "73092",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 1,
+     "parts": [
+      {
+       "part": "3460",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3666",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 2,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 4
+      },
+      {
+       "part": "2877",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 3,
+     "parts": [
+      {
+       "part": "4033",
+       "color": "Red",
+       "qty": 3
+      },
+      {
+       "part": "4034",
+       "color": "Trans-Clear",
+       "qty": 3
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 4,
+     "parts": [
+      {
+       "part": "3005",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "4070",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 5,
+     "parts": [
+      {
+       "part": "3460",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3455",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3666",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 22,
+     "step": 6,
+     "parts": [
+      {
+       "part": "4033",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "4034",
+       "color": "Trans-Clear",
+       "qty": 2
+      },
+      {
+       "part": "4854",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 23,
+     "step": 7,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "2877",
+       "color": "Black",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 23,
+     "step": 8,
+     "parts": [
+      {
+       "part": "4033",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "4034",
+       "color": "Trans-Clear",
+       "qty": 2
+      },
+      {
+       "part": "3005",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "4070",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 24,
+     "step": 10,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 4
+      },
+      {
+       "part": "2877",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 25,
+     "step": 11,
+     "parts": [
+      {
+       "part": "4033",
+       "color": "Red",
+       "qty": 3
+      },
+      {
+       "part": "4034",
+       "color": "Trans-Clear",
+       "qty": 3
+      }
+     ]
+    },
+    {
+     "page": 25,
+     "step": 12,
+     "parts": [
+      {
+       "part": "32083",
+       "color": "Black",
+       "qty": 6
+      }
+     ]
+    },
+    {
+     "page": 26,
+     "step": 8,
+     "parts": [
+      {
+       "part": "40232",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "40234",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 26,
+     "step": 13,
+     "parts": [
+      {
+       "part": "2412b",
+       "color": "Dark Bluish Gray",
+       "qty": 6
+      }
+     ]
+    }
+   ],
+   "parts": [
+    {
+     "part": "6584a",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3795",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3460",
+     "color": "Tan",
+     "qty": 4
+    },
+    {
+     "part": "3001",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3001",
+     "color": "Reddish Brown",
+     "qty": 3
+    },
+    {
+     "part": "3020",
+     "color": "Reddish Brown",
+     "qty": 4
+    },
+    {
+     "part": "3008",
+     "color": "Red",
+     "qty": 3
+    },
+    {
+     "part": "3009",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "3666",
+     "color": "Black",
+     "qty": 5
+    },
+    {
+     "part": "4162",
+     "color": "Red",
+     "qty": 4
+    },
+    {
+     "part": "6636",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3048c",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "3068",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3069pb0002",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "4073",
+     "color": "Black",
+     "qty": 7
+    },
+    {
+     "part": "3069pb0038",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "2878c01",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "4022",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3021",
+     "color": "Blue",
+     "qty": 2
+    },
+    {
+     "part": "4025",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "2920",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "73092",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3460",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "3004",
+     "color": "Red",
+     "qty": 10
+    },
+    {
+     "part": "2877",
+     "color": "Black",
+     "qty": 5
+    },
+    {
+     "part": "4033",
+     "color": "Red",
+     "qty": 10
+    },
+    {
+     "part": "4034",
+     "color": "Trans-Clear",
+     "qty": 10
+    },
+    {
+     "part": "3005",
+     "color": "Red",
+     "qty": 4
+    },
+    {
+     "part": "4070",
+     "color": "Dark Bluish Gray",
+     "qty": 4
+    },
+    {
+     "part": "3455",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "4854",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "32083",
+     "color": "Black",
+     "qty": 6
+    },
+    {
+     "part": "40232",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "40234",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "2412b",
+     "color": "Dark Bluish Gray",
+     "qty": 11
+    },
+    {
+     "part": "3039pb026",
+     "color": "Tan",
+     "qty": 1
+    }
+   ]
+  },
+  {
+   "name": "Abschnitt 4",
+   "bag": "Bahnhof · Tüten 4 + 5",
+   "pages": "28–50",
+   "steps": [
+    {
+     "page": 28,
+     "step": 1,
+     "parts": [
+      {
+       "part": "41539",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3029",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3700",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 28,
+     "step": 2,
+     "parts": [
+      {
+       "part": "3068",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 29,
+     "step": 3,
+     "parts": [
+      {
+       "part": "2453a",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3040",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 29,
+     "step": 4,
+     "parts": [
+      {
+       "part": "2454",
+       "color": "Dark Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 29,
+     "step": 5,
+     "parts": [
+      {
+       "part": "3455",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "2453a",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 30,
+     "step": 6,
+     "parts": [
+      {
+       "part": "2454",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 30,
+     "step": 7,
+     "parts": [
+      {
+       "part": "30504",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 30,
+     "step": 8,
+     "parts": [
+      {
+       "part": "3039",
+       "color": "Sand Green",
+       "qty": 2
+      },
+      {
+       "part": "3040",
+       "color": "Sand Green",
+       "qty": 1
+      },
+      {
+       "part": "3045",
+       "color": "Sand Green",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 31,
+     "step": 9,
+     "parts": [
+      {
+       "part": "3666",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 2
+      },
+      {
+       "part": "4073",
+       "color": "Trans-Neon Orange",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 31,
+     "step": 10,
+     "parts": [
+      {
+       "part": "4738a",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "4739a",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "x223",
+       "color": "Green",
+       "qty": 1
+      },
+      {
+       "part": "30374",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "30152c03",
+       "color": "Trans-Purple",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3040",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3660",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "30363",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 32,
+     "step": 11,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3003",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3040",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 32,
+     "step": 12,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3004",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4460a",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3700",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 4
+      },
+      {
+       "part": "3660",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 33,
+     "step": 13,
+     "parts": [
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3659",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3659",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 33,
+     "step": 14,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 3
+      },
+      {
+       "part": "3010",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3710",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 34,
+     "step": 15,
+     "parts": [
+      {
+       "part": "3853",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "3854",
+       "color": "White",
+       "qty": 2
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 34,
+     "step": 16,
+     "parts": [
+      {
+       "part": "3008",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 3
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 35,
+     "step": 17,
+     "parts": [
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 35,
+     "step": 18,
+     "parts": [
+      {
+       "part": "3045",
+       "color": "Sand Green",
+       "qty": 2
+      },
+      {
+       "part": "3039",
+       "color": "Sand Green",
+       "qty": 4
+      },
+      {
+       "part": "3040",
+       "color": "Sand Green",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 36,
+     "step": 19,
+     "parts": [
+      {
+       "part": "2420",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 36,
+     "step": 20,
+     "parts": [
+      {
+       "part": "3003",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3678b",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "3069",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 37,
+     "step": 21,
+     "parts": [
+      {
+       "part": "2039",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "4073",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "4070",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "2431pb0022",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "40232",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "2495",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "2496",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "4449",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "4449",
+       "color": "White",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 38,
+     "step": 1,
+     "parts": [
+      {
+       "part": "3029",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3040",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 38,
+     "step": 2,
+     "parts": [
+      {
+       "part": "41539",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 4
+      }
+     ]
+    },
+    {
+     "page": 38,
+     "step": 3,
+     "parts": [
+      {
+       "part": "3008",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3023",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2431",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 38,
+     "step": 4,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2431",
+       "color": "Red",
+       "qty": 1
+      },
+      {
+       "part": "3003",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 39,
+     "step": 5,
+     "parts": [
+      {
+       "part": "6541",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2653",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 39,
+     "step": 6,
+     "parts": [
+      {
+       "part": "3021",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3700",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3022",
+       "color": "Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 39,
+     "step": 7,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 4
+      },
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "4073",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 39,
+     "step": 8,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Red",
+       "qty": 2
+      },
+      {
+       "part": "3069pb0002",
+       "color": "Tan",
+       "qty": 1
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3069",
+       "color": "Dark Red",
+       "qty": 2
+      },
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 40,
+     "step": 9,
+     "parts": [
+      {
+       "part": "32028",
+       "color": "Yellow",
+       "qty": 1
+      },
+      {
+       "part": "4081b",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3024",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3069",
+       "color": "Dark Red",
+       "qty": 5
+      },
+      {
+       "part": "3023",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3069pb0002",
+       "color": "Tan",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 40,
+     "step": 10,
+     "parts": [
+      {
+       "part": "3024",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "4073",
+       "color": "Dark Red",
+       "qty": 3
+      },
+      {
+       "part": "3623",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 3
+      }
+     ]
+    },
+    {
+     "page": 41,
+     "step": 11,
+     "parts": [
+      {
+       "part": "3005",
+       "color": "Light Bluish Gray",
+       "qty": 3
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 41,
+     "step": 12,
+     "parts": [
+      {
+       "part": "3853",
+       "color": "Dark Red",
+       "qty": 2
+      },
+      {
+       "part": "3854",
+       "color": "White",
+       "qty": 4
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 42,
+     "step": 13,
+     "parts": [
+      {
+       "part": "4345",
+       "color": "Light Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "4346pb02",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "3008",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 42,
+     "step": 14,
+     "parts": [
+      {
+       "part": "3021",
+       "color": "Reddish Brown",
+       "qty": 2
+      },
+      {
+       "part": "2431",
+       "color": "Sand Green",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "6126",
+       "color": "Trans-Neon Orange",
+       "qty": 1
+      },
+      {
+       "part": "2456",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3069pb0005",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 43,
+     "step": 15,
+     "parts": [
+      {
+       "part": "30504",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "70501",
+       "color": "Chrome Gold",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 43,
+     "step": 16,
+     "parts": [
+      {
+       "part": "4073",
+       "color": "Dark Red",
+       "qty": 4
+      },
+      {
+       "part": "3023",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3003",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 44,
+     "step": 17,
+     "parts": [
+      {
+       "part": "6231",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "4865",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "3010",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 44,
+     "step": 18,
+     "parts": [
+      {
+       "part": "3937",
+       "color": "White",
+       "qty": 1
+      },
+      {
+       "part": "3020",
+       "color": "Reddish Brown",
+       "qty": 1
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 3
+      },
+      {
+       "part": "3700",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 45,
+     "step": 19,
+     "parts": [
+      {
+       "part": "3069px41",
+       "color": "White",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 45,
+     "step": 20,
+     "parts": [
+      {
+       "part": "6126",
+       "color": "Trans-Neon Orange",
+       "qty": 1
+      },
+      {
+       "part": "3899",
+       "color": "Yellow",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 46,
+     "step": 21,
+     "parts": [
+      {
+       "part": "3853",
+       "color": "Dark Red",
+       "qty": 2
+      },
+      {
+       "part": "3854",
+       "color": "White",
+       "qty": 4
+      }
+     ]
+    },
+    {
+     "page": 46,
+     "step": 22,
+     "parts": [
+      {
+       "part": "3004",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "2357",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "3008",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 47,
+     "step": 23,
+     "parts": [
+      {
+       "part": "3795",
+       "color": "Black",
+       "qty": 2
+      },
+      {
+       "part": "2420",
+       "color": "Black",
+       "qty": 1
+      },
+      {
+       "part": "3023",
+       "color": "Black",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 47,
+     "step": 24,
+     "parts": [
+      {
+       "part": "3045",
+       "color": "Sand Green",
+       "qty": 1
+      },
+      {
+       "part": "3039",
+       "color": "Sand Green",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 48,
+     "step": 25,
+     "parts": [
+      {
+       "part": "3040",
+       "color": "Sand Green",
+       "qty": 1
+      },
+      {
+       "part": "3039",
+       "color": "Sand Green",
+       "qty": 2
+      }
+     ]
+    },
+    {
+     "page": 48,
+     "step": 26,
+     "parts": [
+      {
+       "part": "3673",
+       "color": "Light Bluish Gray",
+       "qty": 2
+      },
+      {
+       "part": "2420",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      }
+     ]
+    },
+    {
+     "page": 50,
+     "step": 28,
+     "parts": [
+      {
+       "part": "2039",
+       "color": "Dark Bluish Gray",
+       "qty": 1
+      },
+      {
+       "part": "4073",
+       "color": "Dark Red",
+       "qty": 1
+      },
+      {
+       "part": "3062",
+       "color": "Trans-Yellow",
+       "qty": 1
+      },
+      {
+       "part": "4740",
+       "color": "Dark Red",
+       "qty": 1
+      }
+     ]
+    }
+   ],
+   "parts": [
+    {
+     "part": "41539",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3029",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3700",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "3005",
+     "color": "Light Bluish Gray",
+     "qty": 23
+    },
+    {
+     "part": "3068",
+     "color": "Dark Red",
+     "qty": 1
+    },
+    {
+     "part": "2453a",
+     "color": "Dark Bluish Gray",
+     "qty": 3
+    },
+    {
+     "part": "3040",
+     "color": "Dark Bluish Gray",
+     "qty": 6
+    },
+    {
+     "part": "2454",
+     "color": "Dark Red",
+     "qty": 2
+    },
+    {
+     "part": "3455",
+     "color": "Dark Red",
+     "qty": 2
+    },
+    {
+     "part": "2454",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3004",
+     "color": "Light Bluish Gray",
+     "qty": 24
+    },
+    {
+     "part": "30504",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "3039",
+     "color": "Sand Green",
+     "qty": 11
+    },
+    {
+     "part": "3040",
+     "color": "Sand Green",
+     "qty": 4
+    },
+    {
+     "part": "3045",
+     "color": "Sand Green",
+     "qty": 4
+    },
+    {
+     "part": "3666",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3062",
+     "color": "Dark Red",
+     "qty": 10
+    },
+    {
+     "part": "4073",
+     "color": "Trans-Neon Orange",
+     "qty": 2
+    },
+    {
+     "part": "4738a",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "4739a",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "x223",
+     "color": "Green",
+     "qty": 1
+    },
+    {
+     "part": "30374",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "30152c03",
+     "color": "Trans-Purple",
+     "qty": 1
+    },
+    {
+     "part": "2357",
+     "color": "Dark Bluish Gray",
+     "qty": 21
+    },
+    {
+     "part": "3010",
+     "color": "Dark Bluish Gray",
+     "qty": 9
+    },
+    {
+     "part": "3660",
+     "color": "Dark Bluish Gray",
+     "qty": 5
+    },
+    {
+     "part": "30363",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3003",
+     "color": "Dark Bluish Gray",
+     "qty": 4
+    },
+    {
+     "part": "3004",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4460a",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3659",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3659",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3010",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3710",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3853",
+     "color": "Dark Red",
+     "qty": 5
+    },
+    {
+     "part": "3854",
+     "color": "White",
+     "qty": 10
+    },
+    {
+     "part": "3008",
+     "color": "Dark Bluish Gray",
+     "qty": 4
+    },
+    {
+     "part": "2420",
+     "color": "Dark Bluish Gray",
+     "qty": 3
+    },
+    {
+     "part": "3678b",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3062",
+     "color": "Black",
+     "qty": 9
+    },
+    {
+     "part": "3069",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "2039",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "4073",
+     "color": "Dark Red",
+     "qty": 9
+    },
+    {
+     "part": "4070",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "2431pb0022",
+     "color": "Tan",
+     "qty": 1
+    },
+    {
+     "part": "40232",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "2495",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "2496",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "4449",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "4449",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "3023",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "2431",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "6541",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2653",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3021",
+     "color": "Reddish Brown",
+     "qty": 4
+    },
+    {
+     "part": "3022",
+     "color": "Red",
+     "qty": 1
+    },
+    {
+     "part": "4073",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "3004",
+     "color": "Red",
+     "qty": 2
+    },
+    {
+     "part": "3069pb0002",
+     "color": "Tan",
+     "qty": 2
+    },
+    {
+     "part": "3069",
+     "color": "Dark Red",
+     "qty": 8
+    },
+    {
+     "part": "32028",
+     "color": "Yellow",
+     "qty": 1
+    },
+    {
+     "part": "4081b",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3024",
+     "color": "Dark Bluish Gray",
+     "qty": 5
+    },
+    {
+     "part": "3623",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "4345",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "4346pb02",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "2431",
+     "color": "Sand Green",
+     "qty": 1
+    },
+    {
+     "part": "6126",
+     "color": "Trans-Neon Orange",
+     "qty": 2
+    },
+    {
+     "part": "2456",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3069pb0005",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "70501",
+     "color": "Chrome Gold",
+     "qty": 1
+    },
+    {
+     "part": "3023",
+     "color": "Black",
+     "qty": 4
+    },
+    {
+     "part": "6231",
+     "color": "White",
+     "qty": 2
+    },
+    {
+     "part": "4865",
+     "color": "White",
+     "qty": 2
+    },
+    {
+     "part": "3937",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "3020",
+     "color": "Reddish Brown",
+     "qty": 1
+    },
+    {
+     "part": "3069px41",
+     "color": "White",
+     "qty": 1
+    },
+    {
+     "part": "3899",
+     "color": "Yellow",
+     "qty": 1
+    },
+    {
+     "part": "3795",
+     "color": "Black",
+     "qty": 2
+    },
+    {
+     "part": "2420",
+     "color": "Black",
+     "qty": 3
+    },
+    {
+     "part": "3673",
+     "color": "Light Bluish Gray",
+     "qty": 2
+    },
+    {
+     "part": "3062",
+     "color": "Trans-Yellow",
+     "qty": 1
+    },
+    {
+     "part": "4740",
+     "color": "Dark Red",
+     "qty": 1
+    },
+    {
+     "part": "5306c01",
+     "color": "Dark Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3070",
+     "color": "Dark Red",
+     "qty": 2
+    },
+    {
+     "part": "2431",
+     "color": "Dark Red",
+     "qty": 1
+    },
+    {
+     "part": "30374",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "2817",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3069",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3069pb0006",
+     "color": "Light Bluish Gray",
+     "qty": 1
+    },
+    {
+     "part": "3070p01",
+     "color": "Yellow",
+     "qty": 2
+    },
+    {
+     "part": "3070p02",
+     "color": "Yellow",
+     "qty": 2
+    }
+   ]
+  },
+  {
+   "name": "Abschnitt 5",
+   "bag": "Schienen & Trafo",
+   "pages": "2",
+   "steps": [],
+   "parts": [
+    {
+     "part": "2868b",
+     "color": "Black",
+     "qty": 1
+    },
+    {
+     "part": "2867c01",
+     "color": "Dark Bluish Gray",
+     "qty": 16
+    },
+    {
+     "part": "2865c01",
+     "color": "Dark Bluish Gray",
+     "qty": 2
+    }
+   ]
+  },
+  {
+   "name": "Weitere Teile",
+   "bag": "",
+   "pages": "",
+   "steps": [],
+   "parts": [
+    {
+     "part": "30374",
+     "color": "Dark Nougat",
+     "qty": 1
+    }
+   ]
+  }
+ ]
+}

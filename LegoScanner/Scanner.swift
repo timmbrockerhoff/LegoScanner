@@ -1,5 +1,6 @@
 import Accelerate
 import AVFoundation
+import CoreMotion
 import Observation
 import UIKit
 import Vision
@@ -9,18 +10,18 @@ struct SeenPart: Identifiable {
     enum State { case counted, unsure }
     let id = UUID()
     var box: CGRect // normiert aufs Kamerabild, Ursprung oben links
-    let scan: ScanResult
+    let part: DetectedPart
     var state: State
-    var label: String { [scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · ") }
+    var label: String { part.label }
 }
 
-/// Live-Scanner: Die Kamera läuft dauerhaft. Liegt das Bild ruhig, zerlegt der `PartFinder` es in einzelne
-/// Teile; nur Teile, die noch nicht verfolgt werden, gehen an Brickognize (alle gleichzeitig). Erkannte Teile
-/// werden per Vision-Tracking festgehalten, damit Wackeln nichts neu auslöst oder doppelt zählt.
+/// Live-Scanner: Die Kamera läuft dauerhaft. Liegt das Bild ruhig und hat sich etwas geändert, geht das
+/// Scanfeld ans eigene Backend (Claude erkennt Teile, Farben und ihre Lage). Erkannte Teile werden per
+/// Vision-Tracking festgehalten, damit Wackeln nichts neu auslöst oder doppelt zählt.
 @MainActor @Observable
 final class Scanner: NSObject {
     enum Camera { case starting, running, denied, unavailable }
-    enum Phase: Equatable { case searching, holdStill, recognizing(Int), done(String), notFound, failed }
+    enum Phase: Equatable { case searching, holdStill, recognizing(Int), done(String), notFound, failed, tooDark, aimDown, paused }
 
     var camera: Camera = .starting
     var phase: Phase = .searching
@@ -30,12 +31,30 @@ final class Scanner: NSObject {
 
     @ObservationIgnored let session = AVCaptureSession()
     @ObservationIgnored var basket: Basket?
+    @ObservationIgnored var sets: SetStore?
     @ObservationIgnored private let videoQueue = DispatchQueue(label: "scanner.video")
     @ObservationIgnored nonisolated(unsafe) private let analyzer = FrameAnalyzer() // nur auf videoQueue
     /// Gezählte Teile, die das Tracking gerade verloren hat (Wackeln, kurz verdeckt). Tauchen sie innerhalb
-    /// von `reacquireSeconds` wieder auf, werden sie nicht noch einmal gezählt.
-    @ObservationIgnored private var recentlyLost: [(candidates: [String], at: Date)] = []
+    /// von `reacquireSeconds` wieder auf und liegen noch in der Kiste, werden sie nicht noch einmal gezählt.
+    @ObservationIgnored private var recentlyLost: [(partNo: String, at: Date)] = []
     static let reacquireSeconds: TimeInterval = 5
+
+    // Kosten: Jeder Scan ist eine bezahlte Anfrage. Nur scannen, wenn die Kamera nach unten zeigt (Teile liegen
+    // auf dem Tisch), und nach mehreren leeren Ergebnissen in Folge pausieren (App offen liegen gelassen).
+    @ObservationIgnored private let motion = CMMotionManager()
+    @ObservationIgnored private var emptyStreak = 0
+    // Kalibrierung: Schwerkraft z = -1 heißt Display waagerecht nach oben; -0.7 erlaubt etwa 45° Neigung.
+    static let maxGravityZ = -0.7
+    static let emptyStreakPause = 3
+
+    /// Kamera zeigt nach unten. Ohne Bewegungssensor (Simulator) immer ja.
+    private var pointsDown: Bool { motion.deviceMotion.map { $0.gravity.z < Self.maxGravityZ } ?? true }
+
+    /// Nach einer Pause wegen leerer Scans wieder automatisch scannen.
+    func resume() {
+        emptyStreak = 0
+        phase = .searching
+    }
 
     /// Scanfeld: 80 % der Bildbreite, quadratisch, etwas über der Mitte. Nur hier wird gesucht und erkannt.
     // Kalibrierung: Größe/Lage hier ändern, Anzeige passt sich automatisch an.
@@ -69,123 +88,136 @@ final class Scanner: NSObject {
         output.setSampleBufferDelegate(self, queue: videoQueue)
 
         session.beginConfiguration()
-        // 4K, damit kleine Teile im Ausschnitt genug Pixel für Brickognize haben (bei 1080p nur ~60 px).
+        // 4K, damit kleine Teile im Scanfeld genug Pixel haben.
         session.sessionPreset = session.canSetSessionPreset(.hd4K3840x2160) ? .hd4K3840x2160 : .hd1920x1080
         if session.canAddInput(input) { session.addInput(input) }
         if session.canAddOutput(output) { session.addOutput(output) }
         output.connection(with: .video)?.videoRotationAngle = 90 // Bilder hochkant
         session.commitConfiguration()
 
+        motion.deviceMotionUpdateInterval = 0.2
+        motion.startDeviceMotionUpdates()
         setRunning(true)
         camera = .running
     }
 
-    /// Kamera an/aus, z. B. während der Warenkorb offen ist.
+    /// Kamera an/aus, z. B. wenn der Scan-Tab verlassen wird.
     func setRunning(_ running: Bool) {
         guard camera != .denied, camera != .unavailable else { return }
         let session = session
-        videoQueue.async { running ? session.startRunning() : session.stopRunning() }
+        videoQueue.async {
+            running ? session.startRunning() : session.stopRunning()
+        }
     }
 
     /// Teile aus einem Foto der Mediathek scannen (auch mehrere).
     func scan(photo: UIImage) {
-        guard let image = photo.uprightResized(maxSide: 1024).cgImage else { return }
-        phase = .recognizing(0)
-        Task {
-            let regions = await Task.detached { PartFinder.find(in: image) }.value
-            await recognize(regions, area: nil, thumb: nil)
-        }
+        Task { await recognize(photo, area: nil, thumb: nil) }
     }
 
     /// Orange (unsicher) erkanntes Teil per Antippen doch zählen.
     func confirm(_ id: SeenPart.ID) {
         guard let index = parts.firstIndex(where: { $0.id == id }), parts[index].state == .unsure else { return }
-        let scan = parts[index].scan
-        if let listing = scan.listingID {
-            Brickognize.sendFeedback(listingID: listing, partID: scan.item.id, correct: true)
-        }
-        basket?.add(scan)
         parts[index].state = .counted
-        phase = .done(parts[index].label)
+        phase = .done(count(parts[index].part))
+    }
+
+    /// Teil zählen: gehört es zu einem Set, das der Nutzer zusammensucht, dorthin, sonst in die Kiste.
+    /// Rückgabe: Text für die Statuszeile.
+    private func count(_ part: DetectedPart) -> String {
+        if let assignment = sets?.assign(part) { return assignment.label }
+        basket?.add(part)
+        return part.label
     }
 
     private func handle(moved: [(UUID, CGRect)], lost: [UUID], decision: FrameAnalyzer.Decision,
-                        regions: [FoundRegion]?, area: CGRect, thumb: [UInt8], size: CGSize) {
+                        image: UIImage?, area: CGRect, thumb: [UInt8], size: CGSize) {
         imageSize = size
         for (id, box) in moved {
             if let index = parts.firstIndex(where: { $0.id == id }) { parts[index].box = box }
         }
         for id in lost {
             guard let index = parts.firstIndex(where: { $0.id == id }) else { continue }
-            if parts[index].state == .counted { recentlyLost.append((parts[index].scan.candidates, .now)) }
+            if parts[index].state == .counted { recentlyLost.append((parts[index].part.partNo, .now)) }
             parts.remove(at: index)
         }
 
         if case .recognizing = phase { return }
+        if phase == .paused { // bleibt pausiert, bis der Nutzer tippt
+            if decision == .scan { let analyzer = analyzer; videoQueue.async { analyzer.busy = false } }
+            return
+        }
         switch decision {
         case .moving: if parts.isEmpty { phase = .searching }
         case .settling: if parts.isEmpty { phase = .holdStill }
         case .idle: break
         case .scan:
-            guard let regions else { break }
-            Task { await recognize(regions, area: area, thumb: thumb) }
+            guard let image else { break }
+            // Bilder, aus denen nichts zu erkennen ist, gar nicht erst senden (jede Anfrage kostet).
+            // Kalibrierung an iPhone-Scans: abgedeckt/schwarz ≈ 1–4, gut ≈ 65–110.
+            let brightness = thumb.reduce(0) { $0 + Int($1) } / max(thumb.count, 1)
+            if !pointsDown || brightness < 20 {
+                phase = brightness < 20 ? .tooDark : .aimDown
+                let analyzer = analyzer
+                videoQueue.async { analyzer.busy = false }
+                break
+            }
+            Task { await recognize(image, area: area, thumb: thumb) }
         }
     }
 
-    /// Alle neuen Bereiche gleichzeitig an Brickognize, Ergebnisse zählen bzw. zum Bestätigen anzeigen.
+    /// Bild ans Backend, Ergebnisse zählen bzw. zum Bestätigen anzeigen.
     /// `area` = Scanfeld (nur Kamera), nil bei Fotos aus der Mediathek.
-    private func recognize(_ regions: [FoundRegion], area: CGRect?, thumb: [UInt8]?) async {
+    private func recognize(_ image: UIImage, area: CGRect?, thumb: [UInt8]?) async {
         defer {
             let analyzer = analyzer
             videoQueue.async { analyzer.busy = false }
         }
-        guard !regions.isEmpty else {
-            // Kamera: alles im Bild wird schon verfolgt → nichts zu tun. Sonst: leerer Tisch.
-            if parts.isEmpty {
-                phase = .notFound
-                markEmpty(thumb)
-            }
-            return
+        phase = .recognizing(parts.count + 1)
+        var found: [DetectedPart] = []
+        // Erst auf dem Gerät (kostenlos, offline), solange Sets gewählt sind. Claude nur, wenn das eigene Modell ein Teil
+        // sieht, sich aber nicht sicher ist, oder wenn es (noch) kein eigenes Modell gibt.
+        let candidates = sets?.sets.flatMap(\.lego.parts) ?? []
+        let local = OnDeviceRecognizer.shared.isAvailable && !candidates.isEmpty
+        if local {
+            found = await Task.detached(priority: .userInitiated) { OnDeviceRecognizer.shared.recognize(image, candidates: candidates) }.value
         }
-        phase = .recognizing(regions.count)
-
-        let outcomes = await withTaskGroup(of: (FoundRegion, Result<ScanResult?, Error>).self) { group in
-            for region in regions {
-                group.addTask {
-                    do { return (region, .success(try await Brickognize.identify(region.image).result)) }
-                    catch { return (region, .failure(error)) }
+        if !local || found.contains(where: { $0.confidence < Backend.sureScore }) {
+            do {
+                found = try await Backend.identify(image, sets: sets?.setNumbers ?? [])
+            } catch {
+                #if DEBUG
+                print("SCAN Backend-Fehler:", error.localizedDescription, Backend.url)
+                #endif
+                // Ohne Verbindung oder Guthaben: Ergebnisse vom Gerät behalten (unsichere bleiben orange zum Bestätigen)
+                if found.isEmpty && !local {
+                    phase = .failed
+                    return
                 }
             }
-            return await group.reduce(into: []) { $0.append($1) }
         }
 
+        emptyStreak = found.isEmpty ? emptyStreak + 1 : 0
         recentlyLost.removeAll { Date.now.timeIntervalSince($0.at) > Self.reacquireSeconds }
-        var newlyCounted: [String] = [], recognized = 0, failed = 0
-        for (region, outcome) in outcomes {
-            guard case .success(let result) = outcome else { failed += 1; continue }
-            guard let scan = result else { // kein LEGO (Holzmaserung, Tasse …): eine Weile nicht wieder fragen
-                if let area {
-                    let analyzer = analyzer, box = region.box.mapped(into: area)
-                    videoQueue.async { analyzer.ignore(box) }
-                }
-                continue
-            }
-            recognized += 1
+        var newlyCounted: [String] = []
+        for detected in found {
+            let box = area.map { detected.rect.mapped(into: $0) }
+            // Schon verfolgt (das Backend sieht immer das ganze Scanfeld): nichts tun
+            if let box, parts.contains(where: { overlap($0.box, box) > 0.3 }) { continue }
+
             let state: SeenPart.State
-            if let index = recentlyLost.firstIndex(where: { !Set($0.candidates).isDisjoint(with: scan.candidates) }) {
-                recentlyLost.remove(at: index) // dasselbe Teil, nur kurz aus dem Tracking gefallen
-                state = .counted
-            } else if scan.item.score < Brickognize.sureScore {
+            let lostIndex = recentlyLost.firstIndex { $0.partNo == detected.partNo }
+            if let lostIndex { recentlyLost.remove(at: lostIndex) }
+            if lostIndex != nil && basket?.contains(part: detected.partNo) == true {
+                state = .counted // dasselbe Teil, nur kurz aus dem Tracking gefallen
+            } else if detected.confidence < Backend.sureScore {
                 state = .unsure
             } else {
-                basket?.add(scan)
-                newlyCounted.append([scan.item.name, scan.color?.name].compactMap { $0 }.joined(separator: " · "))
+                newlyCounted.append(count(detected))
                 state = .counted
             }
-            guard let area else { continue } // Mediathek: keine Rahmen im Kamerabild
-            // Brickognize-Rahmen (relativ zum Ausschnitt) ist genauer als der grobe Suchrahmen
-            let box = (scan.box?.mapped(into: region.cropRect) ?? region.box).mapped(into: area)
-            let part = SeenPart(box: box, scan: scan, state: state)
+            guard let box else { continue } // Mediathek: keine Rahmen im Kamerabild
+            let part = SeenPart(box: box, part: detected, state: state)
             parts.append(part)
             let analyzer = analyzer
             videoQueue.async { analyzer.startTracking(part.id, box: box) }
@@ -193,20 +225,24 @@ final class Scanner: NSObject {
 
         if !newlyCounted.isEmpty {
             phase = .done(newlyCounted.count == 1 ? newlyCounted[0] : "\(newlyCounted.count) Teile gezählt")
-        } else if recognized > 0 {
+        } else if !parts.isEmpty {
             phase = .done(parts.count == 1 ? parts[0].label : "\(parts.count) Teile im Bild")
-        } else if failed > 0 {
-            phase = .failed
+        } else if !found.isEmpty {
+            phase = .done(found.count == 1 ? found[0].label : "\(found.count) Teile erkannt")
         } else {
-            phase = .notFound
-            if parts.isEmpty { markEmpty(thumb) }
+            phase = emptyStreak >= Self.emptyStreakPause && area != nil ? .paused : .notFound
+            if let thumb {
+                let analyzer = analyzer
+                videoQueue.async { analyzer.empty = thumb }
+            }
         }
     }
 
-    private func markEmpty(_ thumb: [UInt8]?) {
-        guard let thumb else { return }
-        let analyzer = analyzer
-        videoQueue.async { analyzer.empty = thumb }
+    /// Anteil der kleineren Fläche, der mit der anderen überlappt (0…1).
+    private func overlap(_ a: CGRect, _ b: CGRect) -> Double {
+        let inter = a.intersection(b)
+        guard !inter.isNull else { return 0 }
+        return (inter.width * inter.height) / max(1e-9, min(a.width * a.height, b.width * b.height))
     }
 }
 
@@ -218,22 +254,9 @@ extension Scanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         let (moved, lost) = analyzer.trackAll(pixels, area: area)
         let thumb = FrameAnalyzer.thumbnail(pixels, area: area)
         let decision = analyzer.evaluate(thumb)
-
-        var regions: [FoundRegion]?
-        if decision == .scan, let roi = FrameAnalyzer.cgImage(from: pixels, area: area) {
-            // Nur Bereiche, die noch kein verfolgtes Teil sind: Wackeln kostet so keine Netzwerk-Anfragen.
-            let tracked = analyzer.trackedBoxes, ignored = analyzer.ignoredBoxes
-            regions = PartFinder.find(in: roi).filter { region in
-                let full = region.box.mapped(into: area)
-                return !tracked.contains { PartFinder.overlap($0, full) > 0.3 }
-                    && !ignored.contains { PartFinder.overlap($0, full) > 0.5 }
-            }
-            #if DEBUG
-            print("SCAN Bereiche neu: \(regions?.count ?? 0), verfolgt: \(tracked.count)")
-            #endif
-        }
+        let image = decision == .scan ? FrameAnalyzer.cgImage(from: pixels, area: area).map { UIImage(cgImage: $0) } : nil
         Task { @MainActor in
-            self.handle(moved: moved, lost: lost, decision: decision, regions: regions, area: area, thumb: thumb, size: size)
+            self.handle(moved: moved, lost: lost, decision: decision, image: image, area: area, thumb: thumb, size: size)
         }
     }
 }
@@ -260,15 +283,6 @@ final class FrameAnalyzer {
     private var movedSinceScan = true // ohne Bewegung seit dem letzten Scan wird nie neu gescannt
     private var still = 0
     private var frame = 0
-
-    /// Stellen ohne LEGO-Teil (laut Brickognize): werden eine Weile nicht wieder angefragt.
-    static let ignoreSeconds: TimeInterval = 8
-    private var ignored: [(box: CGRect, until: Date)] = []
-    var ignoredBoxes: [CGRect] {
-        ignored.removeAll { $0.until < .now }
-        return ignored.map(\.box)
-    }
-    func ignore(_ box: CGRect) { ignored.append((box, .now + Self.ignoreSeconds)) }
 
     private let sequence = VNSequenceRequestHandler()
     private var tracks: [UUID: (observation: VNDetectedObjectObservation, weak: Int)] = [:]

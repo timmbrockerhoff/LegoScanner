@@ -1,0 +1,6 @@
+testdata/
+node_modules/
+dev.ts
+test.ts
+tools/
+instructions.ts

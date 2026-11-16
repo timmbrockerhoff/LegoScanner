@@ -2,81 +2,79 @@ import AVFoundation
 import PhotosUI
 import SwiftUI
 
-/// Scanner-Bildschirm: Teil vor die Kamera legen, es wird erkannt, eingerahmt und landet im Warenkorb.
-struct ContentView: View {
-    @State private var basket = Basket()
-    @State private var scanner = Scanner()
-    @State private var showBasket = false
+/// Scan-Tab: Teile vor die Kamera legen, sie werden erkannt, eingerahmt und deinen Sets zugeordnet
+/// (was zu keinem Set gehört, kommt in die Kiste). Die Kamera läuft nur, solange dieser Tab offen ist.
+struct ScannerView: View {
+    let scanner: Scanner
+    let basket: Basket
+    let sets: SetStore
     @State private var photoItem: PhotosPickerItem?
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                switch scanner.camera {
-                case .running, .starting:
-                    ZStack {
-                        CameraPreview(session: scanner.session)
-                        scanFrame
-                        boxOverlay
-                    }
-                    .ignoresSafeArea()
-                case .denied:
-                    ContentUnavailableView {
-                        Label("Kein Kamerazugriff", systemImage: "camera.badge.ellipsis")
-                    } description: {
-                        Text("Zum Scannen braucht die App die Kamera.")
-                    } actions: {
-                        Button("Einstellungen öffnen") { openURL(URL(string: UIApplication.openSettingsURLString)!) }
-                            .buttonStyle(.glassProminent)
-                    }
-                case .unavailable:
-                    ContentUnavailableView("Keine Kamera", systemImage: "video.slash",
-                                           description: Text("Scannen geht nur auf dem iPhone. Teile aus Fotos fügst du über die Mediathek hinzu."))
+        ZStack {
+            switch scanner.camera {
+            case .running, .starting:
+                ZStack {
+                    CameraPreview(session: scanner.session)
+                    scanFrame
+                    boxOverlay
                 }
-            }
-            .safeAreaInset(edge: .top) {
-                if scanner.camera == .running || scanner.phase != .searching { status }
-            }
-            .toolbar(.hidden, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    PhotosPicker(selection: $photoItem, matching: .images) {
-                        Label("Mediathek", systemImage: "photo.on.rectangle")
-                    }
+                .ignoresSafeArea(edges: .top)
+            case .denied:
+                ContentUnavailableView {
+                    Label("Kein Kamerazugriff", systemImage: "camera.badge.ellipsis")
+                } description: {
+                    Text("Zum Scannen braucht die App die Kamera.")
+                } actions: {
+                    Button("Einstellungen öffnen") { openURL(URL(string: UIApplication.openSettingsURLString)!) }
+                        .buttonStyle(.glassProminent)
                 }
-                ToolbarSpacer(.flexible, placement: .bottomBar)
-                ToolbarItem(placement: .bottomBar) {
-                    Button { showBasket = true } label: {
-                        HStack(spacing: 6) {
-                            Image(systemName: "basket.fill")
-                            Text("\(basket.totalCount)")
-                                .monospacedDigit()
-                                .contentTransition(.numericText())
-                        }
-                    }
-                    .buttonStyle(.glassProminent)
-                    .accessibilityLabel("Warenkorb, \(basket.totalCount) Teile")
-                }
-            }
-            .sheet(isPresented: $showBasket) { BasketView(basket: basket) }
-            .onChange(of: showBasket) { _, open in scanner.setRunning(!open) }
-            .onChange(of: photoItem) { _, item in
-                guard let item else { return }
-                Task {
-                    if let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) {
-                        scanner.scan(photo: image)
-                    }
-                    photoItem = nil
-                }
-            }
-            .sensoryFeedback(trigger: basket.totalCount) { old, new in new > old ? .success : nil }
-            .animation(.default, value: basket.totalCount)
-            .task {
-                scanner.basket = basket
-                await scanner.start()
+            case .unavailable:
+                ContentUnavailableView("Keine Kamera", systemImage: "video.slash",
+                                       description: Text("Scannen geht nur auf dem iPhone. Teile aus Fotos fügst du über die Mediathek hinzu."))
             }
         }
+        .safeAreaInset(edge: .top) {
+            if scanner.camera == .running || scanner.phase != .searching { status }
+        }
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                PhotosPicker(selection: $photoItem, matching: .images) {
+                    Label("Mediathek", systemImage: "photo.on.rectangle")
+                        .labelStyle(.iconOnly)
+                        .font(.title3)
+                        .frame(width: 48, height: 48)
+                }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .accessibilityLabel("Foto aus der Mediathek scannen")
+                Spacer()
+                Label(sets.sets.isEmpty ? "Kein Set ausgewählt – alles geht in die Kiste"
+                      : sets.sets.count == 1 ? "Sucht für Set \(sets.sets[0].lego.no.replacingOccurrences(of: "-1", with: ""))" : "Sucht für \(sets.sets.count) Sets",
+                      systemImage: "square.stack.3d.up")
+                    .font(.footnote.weight(.medium))
+                    .lineLimit(1)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .glassEffect()
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
+        }
+        .onChange(of: photoItem) { _, item in
+            guard let item else { return }
+            Task {
+                if let data = try? await item.loadTransferable(type: Data.self), let image = UIImage(data: data) {
+                    scanner.scan(photo: image)
+                }
+                photoItem = nil
+            }
+        }
+        .sensoryFeedback(trigger: basket.totalCount + sets.totalFound) { old, new in new > old ? .success : nil }
+        .task { await scanner.start() } // erst beim ersten Öffnen des Tabs: dann fragt iOS nach der Kamera
+        .onAppear { scanner.setRunning(true) }
+        .onDisappear { scanner.setRunning(false) }
     }
 
     private var status: some View {
@@ -99,6 +97,12 @@ struct ContentView: View {
                 }
             case .notFound:
                 Label("Kein Teil erkannt", systemImage: "questionmark.circle")
+            case .tooDark:
+                Label("Zu dunkel – mehr Licht nötig", systemImage: "moon")
+            case .aimDown:
+                Label("Kamera von oben auf die Teile richten", systemImage: "arrow.down.circle")
+            case .paused:
+                Button("Pausiert – tippen zum Weiterscannen", systemImage: "pause.circle") { scanner.resume() }
             case .failed:
                 Label("Keine Verbindung zur Erkennung", systemImage: "wifi.exclamationmark")
             }

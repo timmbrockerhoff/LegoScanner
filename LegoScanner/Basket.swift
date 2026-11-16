@@ -3,13 +3,13 @@ import Observation
 
 struct BasketItem: Codable, Identifiable {
     var id = UUID()
-    let partID: String
+    let partID: String     // BrickLink-Teilenummer
     let name: String
-    let imageURL: URL?
-    var colorID: Int?   // Rebrickable-Farb-ID
+    var colorID: Int?      // BrickLink-Farb-ID
+    var colorName: String?
     var count = 1
-    var measured: SIMD3<Double>? // gemessene Farbe beim Scan (zum Lernen aus Korrekturen)
-    var listingID: String?       // Brickognize-Suchergebnis (für "Falsch erkannt")
+
+    var imageURL: URL? { BrickLink.imageURL(part: partID, colorID: colorID) }
 }
 
 /// Gescannte Teile. Wird bei jeder Änderung auf dem Gerät gespeichert.
@@ -19,25 +19,23 @@ final class Basket {
 
     var totalCount: Int { items.reduce(0) { $0 + $1.count } }
 
-    @ObservationIgnored private let fileURL = URL.applicationSupportDirectory.appending(path: "basket.json")
+    // v2: seit dem Wechsel auf BrickLink-Farb-IDs (vorher Rebrickable-IDs, nicht kompatibel)
+    @ObservationIgnored private let fileURL = URL.applicationSupportDirectory.appending(path: "basket-v2.json")
 
     init() {
         items = (try? JSONDecoder().decode([BasketItem].self, from: Data(contentsOf: fileURL))) ?? []
     }
 
+    func contains(part: String) -> Bool { items.contains { $0.partID == part } }
+
     /// Gleiches Teil in gleicher Farbe → Anzahl +1, sonst neuer Eintrag. Zuletzt gescannt steht oben.
-    func add(_ scan: ScanResult) {
-        var item = BasketItem(partID: scan.item.id, name: scan.item.name, imageURL: scan.item.img_url,
-                              colorID: scan.color?.id, measured: scan.measured, listingID: scan.listingID)
+    func add(_ part: DetectedPart) {
+        var item = BasketItem(partID: part.partNo, name: part.name, colorID: part.colorId, colorName: part.colorName)
         if let index = items.firstIndex(where: { $0.partID == item.partID && $0.colorID == item.colorID }) {
             item = items.remove(at: index)
             item.count += 1
         }
         items.insert(item, at: 0)
-    }
-
-    func remove(_ id: BasketItem.ID) {
-        items.removeAll { $0.id == id }
     }
 
     private func save() {

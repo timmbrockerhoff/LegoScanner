@@ -2,3 +2,6 @@
 build/
 DerivedData/
 .DS_Store
+Secrets.xcconfig
+# Eigenes Erkennungsmodell (≈ 40 MB, aus render/train.py + export_coreml.py), nicht im Repo
+LegoScanner/Models/
