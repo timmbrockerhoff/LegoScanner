@@ -28,7 +28,9 @@ gray = np.asarray(img.convert("L")).astype(np.int16)
 h, w = gray.shape
 # Rahmenfarbe: deutlich heller als der Seitenhintergrund (Median der Seite)
 background = int(np.median(np.concatenate([gray[:20, :20].ravel(), gray[-20:, -20:].ravel()])))  # Ecken = Seitenhintergrund
-line = np.abs(gray - background) > 90
+# Kalibrierung: dunkle Seiten (21324) haben helle, kontrastreiche Rahmen; helle Seiten (City, 60337) zarte, etwas
+# dunklere Rahmen um hellblaue Kästen
+line = np.abs(gray - background) > (90 if background < 100 else 22)
 MIN = int(0.06 * w)  # Kalibrierung: Kastenkanten sind mindestens ~6 % der Seitenbreite lang
 
 
@@ -52,9 +54,17 @@ for i, (y0, a0, b0) in enumerate(horizontal):
             break
 # Doppelte (Linien sind 2–3 px dick) und ineinanderliegende Rahmen zusammenfassen
 boxes.sort(key=lambda b: (b[2] - b[0]) * (b[3] - b[1]), reverse=True)
+def overlap(a, b):
+    """Anteil der kleineren Fläche, der in der anderen liegt."""
+    ix = max(0, min(a[2], b[2]) - max(a[0], b[0])); iy = max(0, min(a[3], b[3]) - max(a[1], b[1]))
+    return ix * iy / max(1, min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1])))
+
+
 kept = []
 for b in boxes:
-    if not any(b[0] >= k[0] - 6 and b[1] >= k[1] - 6 and b[2] <= k[2] + 6 and b[3] <= k[3] + 6 for k in kept):
+    inside = any(b[0] >= k[0] - 6 and b[1] >= k[1] - 6 and b[2] <= k[2] + 6 and b[3] <= k[3] + 6 for k in kept)
+    twin = any(overlap(b, k) > 0.7 for k in kept)  # abgerundete Rahmen ergeben zwei fast gleiche Rechtecke
+    if not inside and not twin:
         kept.append(b)
 # Seitengroße Rahmen (ganze Bildfläche) sind keine Teilekästen
 kept = [b for b in kept if (b[2] - b[0]) < 0.9 * w and (b[3] - b[1]) < 0.9 * h]

@@ -270,6 +270,8 @@ private struct SectionPartsView: View {
             let section = owned.lego.sections[sectionIndex]
             let mine = owned.allocation()[sectionIndex]
             let info = Dictionary(owned.lego.parts.map { ($0.key, $0) }, uniquingKeysWith: { a, _ in a })
+            // Teile, die in keinem gelesenen Bauschritt stehen, wurden der Tüte nach Teil/Farbe zugeordnet (geschätzt)
+            let readFromSteps = section.steps.flatMap(\.parts).reduce(into: [String: Int]()) { $0[$1.key, default: 0] += $1.qty }
             let rows = section.parts
                 .filter { !onlyMissing || (mine[$0.key] ?? 0) < $0.qty }
                 .sorted { (info[$0.key]?.name ?? "") < (info[$1.key]?.name ?? "") }
@@ -290,6 +292,7 @@ private struct SectionPartsView: View {
                     ForEach(rows, id: \.key) { need in
                         if let part = info[need.key] {
                             PartRow(part: part, have: mine[need.key] ?? 0, need: need.qty,
+                                    estimated: section.steps.isEmpty ? 0 : max(0, need.qty - (readFromSteps[need.key] ?? 0)),
                                     found: Binding(get: { owned.found[part.key] ?? 0 },
                                                    set: { store.setFound($0, key: part.key, in: setNo) }))
                         }
@@ -308,6 +311,7 @@ private struct PartRow: View {
     let part: LegoSet.Part
     let have: Int
     let need: Int
+    let estimated: Int // davon nicht aus der Anleitung gelesen, sondern geschätzt
     @Binding var found: Int
 
     var body: some View {
@@ -321,6 +325,11 @@ private struct PartRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(part.name).font(.subheadline.weight(.semibold)).lineLimit(2)
                 Text("\(part.color) · \(part.part)").font(.caption).foregroundStyle(.secondary)
+                if estimated > 0 {
+                    Label(estimated == need ? "Tüte geschätzt" : "\(estimated) davon Tüte geschätzt", systemImage: "questionmark.circle")
+                        .font(.caption2).foregroundStyle(.orange)
+                        .help("Nicht direkt aus der Anleitung gelesen, sondern nach Teil und Farbe dieser Tüte zugeordnet")
+                }
                 Stepper(value: $found, in: 0...part.qty) {
                     Text("\(have) von \(need)")
                         .font(.subheadline).monospacedDigit()

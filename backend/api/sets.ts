@@ -1,14 +1,15 @@
-import set10132 from "../data/sets/10132-1.json" with { type: "json" };
-import set21324 from "../data/sets/21324-1.json" with { type: "json" };
+import setsIndex from "../data/sets_index.json" with { type: "json" };
 import omrIndex from "../data/omr_index.json" with { type: "json" };
 import bricklinkRgb from "../data/bricklink_rgb.json" with { type: "json" };
 
 // Bauabschnitte, einheitlich für alle Sets (die App zeigt sie immer gleich):
-// 1. eigene Daten (Anleitung ausgelesen, tools/build_set.py), z. B. 10132
+// 1. eigene Daten (Anleitung ausgelesen, tools/set_factory.py), z. B. 10132, 21324
 // 2. LDraw-Modellarchiv (OMR, ~1.500 Sets): Teilmodelle = Abschnitte, mit exakten Bauschritten, ohne KI
 // 3. sonst ein Abschnitt „Ganzes Set“
 // Teileliste immer von Rebrickable, mit BrickLink-Nummern für Teile und Farben.
-const withSections: Record<string, unknown> = { "10132-1": set10132, "21324-1": set21324 };
+// ponytail: alle aufbereiteten Sets in einer Datei im Funktionspaket (tools/set_factory.py). Bei vielen hundert Sets
+// in einen Speicher (Vercel Blob/DB) auslagern, damit das Paket klein bleibt.
+const withSections: Record<string, unknown> = setsIndex;
 const omr: Record<string, string> = omrIndex;
 // BrickLink-Farb-ID → RGB (von Rebrickable): Die App erkennt die Form selbst und wählt die Farbe per Pixelvergleich
 const rgb: Record<string, string> = bricklinkRgb;
