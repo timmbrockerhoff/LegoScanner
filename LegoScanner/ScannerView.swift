@@ -9,6 +9,7 @@ struct ScannerView: View {
     let basket: Basket
     let sets: SetStore
     @State private var photoItem: PhotosPickerItem?
+    @State private var choosingSets = false
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -50,17 +51,21 @@ struct ScannerView: View {
                 .buttonBorderShape(.circle)
                 .accessibilityLabel("Foto aus der Mediathek scannen")
                 Spacer()
-                Label(sets.sets.isEmpty ? "Kein Set ausgewählt – alles geht in die Kiste"
-                      : sets.sets.count == 1 ? "Sucht für Set \(sets.sets[0].lego.no.replacingOccurrences(of: "-1", with: ""))" : "Sucht für \(sets.sets.count) Sets",
-                      systemImage: "square.stack.3d.up")
-                    .font(.footnote.weight(.medium))
-                    .lineLimit(1)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .glassEffect()
+                Button { choosingSets = true } label: {
+                    Label(activeLabel, systemImage: "square.stack.3d.up")
+                        .font(.footnote.weight(.medium))
+                        .lineLimit(1)
+                        .padding(.horizontal, 4)
+                }
+                .buttonStyle(.glass)
+                .accessibilityHint("Sets fürs Scannen auswählen")
             }
             .padding(.horizontal)
             .padding(.bottom, 8)
+        }
+        .sheet(isPresented: $choosingSets) {
+            ScanSetPicker(store: sets)
+                .presentationDetents([.medium, .large])
         }
         .onChange(of: photoItem) { _, item in
             guard let item else { return }
@@ -75,6 +80,14 @@ struct ScannerView: View {
         .task { await scanner.start() } // erst beim ersten Öffnen des Tabs: dann fragt iOS nach der Kamera
         .onAppear { scanner.setRunning(true) }
         .onDisappear { scanner.setRunning(false) }
+    }
+
+    private var activeLabel: String {
+        let active = sets.active
+        if sets.sets.isEmpty { return "Kein Set – alles geht in die Kiste" }
+        if active.isEmpty { return "Kein Set ausgewählt" }
+        if active.count == 1 { return "Sucht für Set \(active[0].lego.no.replacingOccurrences(of: "-1", with: ""))" }
+        return active.count == sets.sets.count ? "Sucht für \(active.count) Sets" : "Sucht für \(active.count) von \(sets.sets.count) Sets"
     }
 
     private var status: some View {
@@ -202,4 +215,57 @@ private struct CameraPreview: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {}
+}
+
+/// Sets fürs Scannen an- und abwählen (blauer Haken wie in den iOS-Einstellungen).
+private struct ScanSetPicker: View {
+    @Bindable var store: SetStore
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    ForEach(store.sets) { owned in
+                        Button { store.toggleActive(owned.id) } label: {
+                            HStack(spacing: 12) {
+                                AsyncImage(url: URL(string: owned.lego.image)) { $0.resizable().scaledToFit() } placeholder: {
+                                    Image(systemName: "shippingbox").foregroundStyle(.tertiary)
+                                }
+                                .frame(width: 48, height: 36)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(owned.lego.name).foregroundStyle(.primary)
+                                    Text("\(owned.lego.no.replacingOccurrences(of: "-1", with: "")) · \(owned.foundCount) von \(owned.lego.totalCount)")
+                                        .font(.caption).foregroundStyle(.secondary).monospacedDigit()
+                                }
+                                Spacer()
+                                if owned.isActive {
+                                    Image(systemName: "checkmark").fontWeight(.semibold).foregroundStyle(.tint)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain) // Text schwarz wie in den Einstellungen, nur der Haken blau
+                        .contentShape(.rect)
+                        .accessibilityAddTraits(owned.isActive ? .isSelected : [])
+                    }
+                } footer: {
+                    Text("Gescannte Teile gehen an die angehakten Sets, in der Reihenfolge aus „Meine Sets“. Alles andere landet in der Kiste.")
+                }
+            }
+            .overlay {
+                if store.sets.isEmpty {
+                    ContentUnavailableView("Noch keine Sets", systemImage: "square.stack.3d.up",
+                                           description: Text("Füge unter „Sets“ ein Set hinzu."))
+                }
+            }
+            .navigationTitle("Sets fürs Scannen")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") { dismiss() }
+                        .buttonStyle(.glassProminent)
+                }
+            }
+        }
+    }
 }

@@ -54,7 +54,9 @@ struct LegoSet: Codable, Hashable {
 struct OwnedSet: Codable, Identifiable {
     let lego: LegoSet
     var found: [String: Int] = [:] // "Teil|Farbe" → gefunden
+    var scanOff: Bool? = nil       // im Scan-Tab abgewählt (nil = angehakt, auch für ältere gespeicherte Daten)
     var id: String { lego.no }
+    var isActive: Bool { scanOff != true }
 
     var foundCount: Int { lego.parts.reduce(0) { $0 + min(found[$1.key] ?? 0, $1.qty) } }
     var progress: Double { Double(foundCount) / Double(max(lego.totalCount, 1)) }
@@ -126,7 +128,14 @@ final class SetStore {
         sets = (try? JSONDecoder().decode([OwnedSet].self, from: Data(contentsOf: fileURL))) ?? []
     }
 
-    var setNumbers: [String] { sets.map(\.lego.no) }
+    /// Sets, die beim Scannen Teile bekommen (im Scan-Tab angehakt), in Prioritäts-Reihenfolge.
+    var active: [OwnedSet] { sets.filter(\.isActive) }
+    var setNumbers: [String] { active.map(\.lego.no) }
+
+    func toggleActive(_ setNo: String) {
+        guard let index = sets.firstIndex(where: { $0.id == setNo }) else { return }
+        sets[index].scanOff = sets[index].isActive ? true : nil
+    }
     var totalFound: Int { sets.reduce(0) { $0 + $1.foundCount } }
 
     /// Fehlteile aller Sets als eine BrickLink-Wanted-List (gleiche Teile zusammengefasst).
@@ -156,7 +165,7 @@ final class SetStore {
         for owned in sets {
             guard let fresh = try? await Backend.fetchSet(owned.lego.no), fresh != owned.lego,
                   let index = sets.firstIndex(where: { $0.id == owned.id }) else { continue }
-            sets[index] = OwnedSet(lego: fresh, found: sets[index].found)
+            sets[index] = OwnedSet(lego: fresh, found: sets[index].found, scanOff: sets[index].scanOff)
         }
     }
 
@@ -178,7 +187,7 @@ final class SetStore {
     func assign(_ detected: DetectedPart) -> Assignment? {
         let shape = Self.baseNumber(detected.partNo)
         var candidates: [(set: Int, part: LegoSet.Part)] = []
-        for (index, owned) in sets.enumerated() {
+        for (index, owned) in sets.enumerated() where owned.isActive {
             for part in owned.lego.parts where Self.baseNumber(part.part) == shape && (owned.found[part.key] ?? 0) < part.qty {
                 candidates.append((index, part))
             }

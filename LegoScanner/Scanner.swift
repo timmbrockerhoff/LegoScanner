@@ -177,7 +177,7 @@ final class Scanner: NSObject {
         var found: [DetectedPart] = []
         // Erst auf dem Gerät (kostenlos, offline), solange Sets gewählt sind. Claude nur, wenn das eigene Modell ein Teil
         // sieht, sich aber nicht sicher ist, oder wenn es (noch) kein eigenes Modell gibt.
-        let candidates = sets?.sets.flatMap(\.lego.parts) ?? []
+        let candidates = sets?.active.flatMap(\.lego.parts) ?? []
         let local = OnDeviceRecognizer.shared.isAvailable && !candidates.isEmpty
         if local {
             found = await Task.detached(priority: .userInitiated) { OnDeviceRecognizer.shared.recognize(image, candidates: candidates) }.value
