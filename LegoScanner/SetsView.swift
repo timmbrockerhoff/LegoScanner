@@ -8,6 +8,7 @@ struct SetsView: View {
     @State private var number = ""
     @State private var adding = false
     @State private var error: String?
+    @State private var editMode = EditMode.inactive // Umsortieren nur im Bearbeiten-Modus
 
     var body: some View {
         NavigationStack {
@@ -28,18 +29,23 @@ struct SetsView: View {
                                 NavigationLink(value: owned.id) { SetRow(owned: owned) }
                             }
                             .onDelete { store.sets.remove(atOffsets: $0) }
-                            .onMove { store.sets.move(fromOffsets: $0, toOffset: $1) }
+                            .onMove(perform: editMode.isEditing ? { store.sets.move(fromOffsets: $0, toOffset: $1) } : nil)
                         } footer: {
-                            Text("Gescannte Teile gehen an das oberste Set, das sie noch braucht, dann absteigend. Reihenfolge per Ziehen ändern. Was zu keinem Set gehört, landet in der Kiste.")
+                            Text("Gescannte Teile gehen an das oberste Set, das sie noch braucht, dann absteigend. Die Reihenfolge änderst du über „Bearbeiten“. Was zu keinem Set gehört, landet in der Kiste.")
                         }
                     }
                 }
             }
+            .environment(\.editMode, $editMode)
             .navigationTitle("Meine Sets")
             .navigationDestination(for: String.self) { SetDetailView(store: store, setNo: $0) }
             .toolbar {
                 if store.sets.count > 1 {
-                    ToolbarItem(placement: .topBarLeading) { EditButton() }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(editMode.isEditing ? "Fertig" : "Bearbeiten") {
+                            withAnimation { editMode = editMode.isEditing ? .inactive : .active }
+                        }
+                    }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Set hinzufügen", systemImage: "plus") { showAdd = true }
