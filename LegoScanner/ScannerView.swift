@@ -21,7 +21,7 @@ struct ScannerView: View {
                     scanFrame
                     boxOverlay
                 }
-                .ignoresSafeArea(edges: .top)
+                .ignoresSafeArea() // Kamera bis unter Tab-Leiste und Knöpfe, die liegen als Glas darüber
             case .denied:
                 ContentUnavailableView {
                     Label("Kein Kamerazugriff", systemImage: "camera.badge.ellipsis")

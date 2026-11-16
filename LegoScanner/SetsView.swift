@@ -108,7 +108,7 @@ private struct SetRow: View {
                 Text(owned.lego.name).font(.headline)
                 Text("\(owned.lego.no.replacingOccurrences(of: "-1", with: "")) · \(String(owned.lego.year))")
                     .font(.subheadline).foregroundStyle(.secondary)
-                ProgressView(value: owned.progress)
+                StatusBar(progress: owned.progress)
                 Text("\(owned.foundCount) von \(owned.lego.totalCount) Teilen")
                     .font(.caption).foregroundStyle(.secondary).monospacedDigit()
             }
@@ -135,7 +135,7 @@ struct SetDetailView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         LabeledContent("Gefunden", value: "\(owned.foundCount) von \(owned.lego.totalCount)")
                             .monospacedDigit()
-                        ProgressView(value: owned.progress)
+                        StatusBar(progress: owned.progress)
                     }
                 }
                 Section("Bauabschnitte") {
@@ -257,7 +257,7 @@ private struct SectionRow: View {
             Text([section.steps.isEmpty ? "Ohne Bauschritte" : "\(section.steps.count) Schritte", section.bag]
                     .filter { !$0.isEmpty }.joined(separator: " · "))
                 .font(.subheadline).foregroundStyle(.secondary)
-            ProgressView(value: status.progress)
+            StatusBar(progress: status.progress)
             HStack {
                 Text("\(status.found) von \(status.total) Teilen").monospacedDigit()
                 Spacer()
@@ -350,5 +350,23 @@ private struct PartRow: View {
                 }
             }
         }
+    }
+}
+
+/// Fortschrittsleiste, gefärbt nach Anteil: rot, orange, grün.
+struct StatusBar: View {
+    let progress: Double
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ProgressView(value: progress)
+                .tint(progress < 1 / 3 ? .red : progress < 2 / 3 ? .orange : .green) // Kalibrierung: Stufen bei einem und zwei Dritteln
+            ZStack(alignment: .trailing) { // Platz für „100 %“, damit alle Leisten gleich lang sind
+                Text(1.0, format: .percent.precision(.fractionLength(0))).hidden()
+                Text(progress, format: .percent.precision(.fractionLength(0)))
+            }
+            .font(.caption).foregroundStyle(.secondary).monospacedDigit()
+        }
+        .animation(.smooth, value: progress)
     }
 }
