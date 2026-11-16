@@ -42,8 +42,11 @@ struct SetsView: View {
             .toolbar {
                 if store.sets.count > 1 {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button(editMode.isEditing ? "Fertig" : "Bearbeiten") {
-                            withAnimation { editMode = editMode.isEditing ? .inactive : .active }
+                        if editMode.isEditing {
+                            Button("Fertig") { withAnimation { editMode = .inactive } }
+                                .buttonStyle(.glassProminent) // wie im System: Abschließen hervorgehoben, blau
+                        } else {
+                            Button("Bearbeiten") { withAnimation { editMode = .active } }
                         }
                     }
                 }
