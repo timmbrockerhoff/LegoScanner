@@ -147,7 +147,7 @@ final class SetStore {
     func add(number: String) async throws {
         let set = try await Backend.fetchSet(number)
         guard !sets.contains(where: { $0.id == set.no }) else { return }
-        sets.insert(OwnedSet(lego: set), at: 0)
+        sets.append(OwnedSet(lego: set)) // neue Sets unten: die Prioritäten oben bleiben, wie der Nutzer sie geordnet hat
     }
 
     /// Teilelisten und Bauabschnitte neu laden (z. B. verbesserte Abschnitte im Backend). Gefundenes bleibt erhalten.
@@ -172,7 +172,7 @@ final class SetStore {
         let label: String
     }
 
-    /// Gescanntes Teil dem Set zuordnen, das es noch braucht. Die Form entscheidet, die Farbe kommt im Zweifel aus der
+    /// Gescanntes Teil dem obersten Set zuordnen, das es noch braucht. Die Form entscheidet, die Farbe kommt im Zweifel aus der
     /// Teileliste: Braucht das Set die Form nur in einer Farbe, zählt das Teil auch bei unsicher erkannter Farbe.
     /// nil = gehört zu keinem Set (landet in der Kiste).
     func assign(_ detected: DetectedPart) -> Assignment? {
@@ -186,8 +186,8 @@ final class SetStore {
         let sameColor = candidates.filter { $0.part.color == detected.colorName }
         let colors = Set(candidates.map(\.part.color))
         let pool = !sameColor.isEmpty ? sameColor : (colors.count == 1 ? candidates : [])
-        // Mehrere Sets brauchen das Teil: zuerst das, das schon am vollständigsten ist
-        guard let pick = pool.max(by: { sets[$0.set].progress < sets[$1.set].progress }) else { return nil }
+        // Mehrere Sets brauchen das Teil: das oberste in „Meine Sets“ zuerst (Reihenfolge = Priorität des Nutzers)
+        guard let pick = pool.min(by: { $0.set < $1.set }) else { return nil }
 
         sets[pick.set].found[pick.part.key, default: 0] += 1
         let owned = sets[pick.set]

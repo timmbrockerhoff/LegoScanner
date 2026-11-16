@@ -28,8 +28,9 @@ struct SetsView: View {
                                 NavigationLink(value: owned.id) { SetRow(owned: owned) }
                             }
                             .onDelete { store.sets.remove(atOffsets: $0) }
+                            .onMove { store.sets.move(fromOffsets: $0, toOffset: $1) }
                         } footer: {
-                            Text("Gescannte Teile gehen zuerst an deine Sets. Was zu keinem Set gehört, landet in der Kiste.")
+                            Text("Gescannte Teile gehen an das oberste Set, das sie noch braucht, dann absteigend. Reihenfolge per Ziehen ändern. Was zu keinem Set gehört, landet in der Kiste.")
                         }
                     }
                 }
@@ -37,6 +38,9 @@ struct SetsView: View {
             .navigationTitle("Meine Sets")
             .navigationDestination(for: String.self) { SetDetailView(store: store, setNo: $0) }
             .toolbar {
+                if store.sets.count > 1 {
+                    ToolbarItem(placement: .topBarLeading) { EditButton() }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Set hinzufügen", systemImage: "plus") { showAdd = true }
                         .disabled(adding)
